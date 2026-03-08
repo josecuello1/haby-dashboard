@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ABC Consulting · Dashboard 2025</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f3f8;--sur:#fff;--sur2:#e8edf5;--bdr:#dde3ee;
+  --acc:#0ea87a;--acc2:#e8620a;--acc3:#5b5ef4;--acc4:#e8334a;
+  --yel:#d49600;--txt:#1a2035;--mut:#7a849a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  padding:14px 26px;background:rgba(255,255,255,.95);border-bottom:1px solid var(--bdr);
+  position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06);backdrop-filter:blur(10px)}
+.logo{font-family:'Inter',sans-serif;font-size:17px;font-weight:800;letter-spacing:-.4px}
+.logo small{font-size:10px;color:var(--mut);font-weight:400;margin-left:8px;letter-spacing:1px}
+.tabs{display:flex;gap:3px;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;padding:3px}
+.tbtn{background:none;border:none;font-family:'DM Sans',sans-serif;font-size:12px;
+  color:var(--mut);padding:5px 16px;border-radius:6px;cursor:pointer;transition:all .2s}
+.tbtn.on{background:var(--acc);color:#fff;font-weight:600}
+.badge{font-size:11px;color:var(--mut);background:var(--sur2);border:1px solid var(--bdr);
+  padding:5px 12px;border-radius:20px}
+main{padding:20px 26px;max-width:1440px;margin:0 auto}
+.slbl{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--mut);margin-bottom:10px;margin-top:20px}
+/* TABS — use visibility so Chart.js can measure hidden canvases */
+.tab{display:none}.tab.on{display:block}
+/* KPI */
+.kgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+.kcard{background:var(--sur);border:1px solid var(--bdr);border-radius:12px;padding:18px;
+  position:relative;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.kcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kcard:nth-child(1)::before{background:var(--acc)}
+.kcard:nth-child(2)::before{background:var(--acc3)}
+.kcard:nth-child(3)::before{background:var(--acc4)}
+.kcard:nth-child(4)::before{background:var(--yel)}
+.kcard:nth-child(5)::before{background:var(--acc2)}
+.klbl{font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.kval{font-family:'Inter',sans-serif;font-size:24px;font-weight:800;letter-spacing:-.5px;line-height:1;margin-bottom:5px}
+.ksub{font-size:11px;color:var(--mut);margin-bottom:3px}
+.kchg{font-size:11px;font-weight:500}
+/* CHARTS */
+.crow{display:grid;gap:12px;margin-bottom:12px}
+.c21{grid-template-columns:2fr 1fr}.c11{grid-template-columns:1fr 1fr}
+.ccard{background:var(--sur);border:1px solid var(--bdr);border-radius:12px;
+  padding:20px;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.chead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.ctit{font-family:'Inter',sans-serif;font-size:14px;font-weight:700}
+.csub{font-size:11px;color:var(--mut);margin-top:2px}
+.cleg{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--mut)}
+.cleg span{display:flex;align-items:center;gap:4px}
+.cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* STAT ROWS */
+.srow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdr)}
+.srow:last-child{border-bottom:none}
+.sname{font-size:12px;color:var(--mut)}.sval{font-size:13px;font-weight:600}
+/* RING */
+.ring-w{display:flex;justify-content:center;margin:4px 0}
+svg.ring{transform:rotate(-90deg)}
+.ring-pct{font-family:'Inter',sans-serif;font-size:44px;font-weight:800;text-align:center;letter-spacing:-1px;margin:6px 0 2px}
+.ring-sub{text-align:center;font-size:11px;color:var(--mut);margin-bottom:10px}
+/* MES FILTER */
+.mfil{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.mfil-lbl{font-size:10px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-right:4px}
+.mbtn{background:var(--sur);border:1px solid var(--bdr);color:var(--mut);font-family:'DM Sans',sans-serif;
+  font-size:11px;padding:4px 11px;border-radius:20px;cursor:pointer;transition:all .2s}
+.mbtn.on{background:var(--acc);color:#fff;font-weight:600;border-color:var(--acc)}
+/* CANAL FILTER */
+.cfil{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-bottom:14px}
+.cfil-lbl{font-size:10px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-right:4px}
+.fb{display:flex;align-items:center;gap:5px;background:var(--sur);border:1px solid var(--bdr);
+  color:var(--mut);font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all .2s}
+.fb span{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.fb.on{color:#fff;font-weight:600;background:var(--fc);border-color:var(--fc)}
+/* CANAL KPI */
+.ckgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.ckard{background:var(--sur);border:1px solid var(--bdr);border-radius:12px;padding:14px 16px}
+.cklbl{font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.ckval{font-family:'Inter',sans-serif;font-size:21px;font-weight:800;letter-spacing:-.5px;margin-bottom:3px}
+.cksub{font-size:11px;color:var(--mut)}
+/* TABLE */
+.tcard{background:var(--sur);border:1px solid var(--bdr);border-radius:12px;padding:20px;overflow-x:auto;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{text-align:right;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  color:var(--mut);padding:0 7px 8px;border-bottom:2px solid var(--bdr)}
+thead th:first-child{text-align:left;min-width:200px}
+tbody tr{border-bottom:1px solid var(--bdr);transition:background .15s}
+tbody tr:hover:not(.tot){background:var(--sur2)}
+tbody tr.tot{background:rgba(14,168,122,.06);font-weight:700;border-top:2px solid var(--bdr)}
+tbody td{padding:9px 7px;text-align:right}
+tbody td:first-child{text-align:left;font-weight:500}
+.pos{color:var(--acc)}.neg{color:var(--acc4)}
+.up{color:var(--acc)}.dn{color:var(--acc4)}.neu{color:var(--mut)}
+@media(max-width:1100px){.kgrid{grid-template-columns:repeat(3,1fr)}.c21,.c11{grid-template-columns:1fr}.ckgrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){main{padding:12px}.kgrid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><img src="data:image/png;base64,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" alt="ABC Consulting" style="height:36px;width:auto;vertical-align:middle;margin-right:10px"><small>CIFRAS EN MILLONES COP</small></div>
+  <div class="tabs">
+    <button class="tbtn on" onclick="showTab('resumen',this)">Resumen</button>
+    <button class="tbtn"    onclick="showTab('canales',this)">Por Canal</button>
+    <button class="tbtn"    onclick="showTab('pyg',this)">P&amp;G Mensual</button>
+    <button class="tbtn"    onclick="showTab('tiendas',this)">Tiendas</button>
+  </div>
+  <span class="badge">Acumulado Ene–Dic 2025</span>
+</header>
+<main>
+
+<!-- RESUMEN -->
+<div id="tab-resumen" class="tab on">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px">
+    <p class="slbl" style="margin:0">Indicadores Clave — 2025</p>
+    <div class="mfil">
+      <span class="mfil-lbl">Filtrar mes:</span>
+      <button class="mbtn on" onclick="filtMes(-1,this)">Todos</button>
+      <button class="mbtn" onclick="filtMes(0,this)">Ene</button><button class="mbtn" onclick="filtMes(1,this)">Feb</button><button class="mbtn" onclick="filtMes(2,this)">Mar</button><button class="mbtn" onclick="filtMes(3,this)">Abr</button><button class="mbtn" onclick="filtMes(4,this)">May</button><button class="mbtn" onclick="filtMes(5,this)">Jun</button><button class="mbtn" onclick="filtMes(6,this)">Jul</button><button class="mbtn" onclick="filtMes(7,this)">Ago</button><button class="mbtn" onclick="filtMes(8,this)">Sep</button><button class="mbtn" onclick="filtMes(9,this)">Oct</button><button class="mbtn" onclick="filtMes(10,this)">Nov</button><button class="mbtn" onclick="filtMes(11,this)">Dic</button>
+    </div>
+  </div>
+  <div class="kgrid">
+    <div class="kcard"><div class="klbl">Ventas Netas</div>
+      <div class="kval" id="kv0" style="color:var(--acc)">$21.675,6 M</div>
+      <div class="ksub" id="ks0">millones COP</div>
+      <div class="kchg neu">Acumulado anual</div></div>
+    <div class="kcard"><div class="klbl">Utilidad Bruta</div>
+      <div class="kval" id="kv1" style="color:var(--acc3)">$10.318,3 M</div>
+      <div class="ksub" id="ks1">Margen 47.6%</div>
+      <div class="kchg neu">millones COP</div></div>
+    <div class="kcard"><div class="klbl">Utilidad Operativa</div>
+      <div class="kval" id="kv2" style="color:#e8334a">-$765,9 M</div>
+      <div class="ksub" id="ks2">Margen -3.5%</div>
+      <div class="kchg dn">▼ millones COP</div></div>
+    <div class="kcard"><div class="klbl">Utilidad Antes Imp.</div>
+      <div class="kval" id="kv3" style="color:#e8334a">-$664,1 M</div>
+      <div class="ksub" id="ks3">Margen -3.1%</div>
+      <div class="kchg dn">▼ millones COP</div></div>
+    <div class="kcard"><div class="klbl">Cumplim. Presup.</div>
+      <div class="kval" id="kv4" style="color:var(--acc2)">90.1%</div>
+      <div class="ksub" id="ks4">vs presupuesto</div>
+      <div class="kchg dn" id="kchg4">▼ -$2.388,7 M brecha</div></div>
+  </div>
+  <div class="crow c21">
+    <div class="ccard">
+      <div class="chead">
+        <div><div class="ctit">Ventas Mensuales 2025</div><div class="csub">Real vs Presupuesto (millones COP)</div></div>
+        <div class="cleg">
+          <span><span class="cdot" style="background:var(--acc)"></span>Real</span>
+          <span><span class="cdot" style="background:var(--acc3)"></span>Presupuesto</span>
+        </div>
+      </div>
+      <div style="position:relative;height:230px"><canvas id="cVentas"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="chead"><div><div class="ctit">Cumplimiento</div><div class="csub">Real vs Meta 2025</div></div></div>
+      <div class="ring-w">
+        <svg class="ring" width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="48" fill="none" stroke="var(--sur2)" stroke-width="11"/>
+          <circle id="ringArc" cx="60" cy="60" r="48" fill="none" stroke="#e8620a" stroke-width="11"
+            stroke-dasharray="301.6" stroke-dashoffset="29.9" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div id="ringPct" class="ring-pct" style="color:#e8620a">90.1%</div>
+      <div id="ringSub" class="ring-sub">Cumplimiento acumulado anual</div>
+      <div class="srow"><span class="sname">Presupuesto</span><span id="rPpto" class="sval">$24.064,3 M</span></div>
+      <div class="srow"><span class="sname">Real</span><span id="rReal" class="sval" style="color:var(--acc)">$21.675,6 M</span></div>
+      <div class="srow"><span class="sname">Diferencia</span><span id="rDiff" class="sval" style="color:#e8334a">-$2.388,7 M</span></div>
+    </div>
+  </div>
+  <div class="crow c11">
+    <div class="ccard">
+      <div class="chead"><div><div class="ctit">Utilidad Operativa Mensual</div><div class="csub">Util. Bruta menos Gastos Operacionales</div></div></div>
+      <div style="position:relative;height:200px"><canvas id="cEbitda"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="chead"><div><div class="ctit">Estructura de Costos</div><div class="csub">Distribución acumulada 2025</div></div></div>
+      <div style="position:relative;height:200px"><canvas id="cCostoPie"></canvas></div>
+    </div>
+  </div>
+  <div class="crow c21">
+    <div class="ccard">
+      <div class="chead"><div><div class="ctit">Tendencias 2025</div><div class="csub">Ventas · Gastos Op. · Util. Bruta</div></div></div>
+      <div style="position:relative;height:210px"><canvas id="cLine"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="chead"><div><div class="ctit">Resumen Anual</div><div class="csub">Totales acumulados 2025</div></div></div>
+      <div class="srow"><span class="sname">Ventas Netas</span><span id="rs0" class="sval">$21.675,6 M</span></div>
+      <div class="srow"><span class="sname">(-) Costo Mercancía</span><span id="rs1" class="sval neg">$11.357,4 M</span></div>
+      <div class="srow"><span class="sname">Utilidad Bruta</span><span id="rs2" class="sval" style="color:#0ea87a">$10.318,3 M</span></div>
+      <div class="srow"><span class="sname">(-) Gastos Operac.</span><span id="rs3" class="sval neg">$11.084,2 M</span></div>
+      <div class="srow"><span class="sname">Utilidad Operativa</span><span id="rs4" class="sval" style="color:#e8334a">-$765,9 M</span></div>
+      <div class="srow"><span class="sname">(+/-) Gtos No Operac.</span><span id="rs5" class="sval" style="color:#0ea87a">$101,8 M</span></div>
+      <div class="srow"><span class="sname">Utilidad Antes Imp.</span><span id="rs6" class="sval" style="color:#e8334a">-$664,1 M</span></div>
+      <div class="srow"><span class="sname">Margen Bruto</span><span id="rs7" class="sval">47.6%</span></div>
+      <div class="srow"><span class="sname">Margen Operativo</span><span id="rs8" class="sval" style="color:#e8334a">-3.5%</span></div>
+    </div>
+  </div>
+  <p class="slbl" style="margin-top:22px">Estado de Pérdidas y Ganancias — 2025 (Millones COP)</p>
+  <div class="tcard"><table>
+    <thead><tr><th>Concepto</th><th>Ene</th><th>Feb</th><th>Mar</th><th>Abr</th><th>May</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dic</th><th style="border-left:2px solid var(--bdr)">TOTAL</th></tr></thead>
+    <tbody id="pygTblRes"></tbody>
+  </table></div>
+</div>
+
+<!-- CANALES -->
+<div id="tab-canales" class="tab">
+  <p class="slbl">Indicadores por Canal — 2025</p>
+  <div class="ckgrid">
+    <div class="ckard"><div class="cklbl">Ventas</div><div class="ckval" id="ck0" style="color:var(--acc)">—</div><div class="cksub" id="ck0s">—</div></div>
+    <div class="ckard"><div class="cklbl">Utilidad Bruta</div><div class="ckval" id="ck1" style="color:var(--acc3)">—</div><div class="cksub" id="ck1s">Margen —</div></div>
+    <div class="ckard"><div class="cklbl">Gastos Operac.</div><div class="ckval" id="ck2" style="color:var(--yel)">—</div><div class="cksub" id="ck2s">—% ventas</div></div>
+    <div class="ckard"><div class="cklbl">Resultado Operativo</div><div class="ckval" id="ck3">—</div><div class="cksub" id="ck3s">Margen —</div></div>
+  </div>
+  <div class="cfil" id="cfil">
+    <span class="cfil-lbl">Filtrar:</span>
+    <button class="fb on" style="--fc:var(--acc3)" onclick="filtrarCanal('TODOS',this)">
+      <span style="background:var(--acc3)"></span>Todos
+    </button>
+    <button class="fb" style="--fc:#f7794f" onclick="filtrarCanal('OTROS NACIONALES',this)"><span style="background:#f7794f"></span>OTROS NACIONALES</button><button class="fb" style="--fc:#d49600" onclick="filtrarCanal('PUNTO VENTA',this)"><span style="background:#d49600"></span>PUNTO VENTA</button><button class="fb" style="--fc:#7c3aed" onclick="filtrarCanal('MARROCAR',this)"><span style="background:#7c3aed"></span>MARROCAR</button><button class="fb" style="--fc:#65a30d" onclick="filtrarCanal('OTROS EXTERIOR',this)"><span style="background:#65a30d"></span>OTROS EXTERIOR</button><button class="fb" style="--fc:#0891b2" onclick="filtrarCanal('BTS',this)"><span style="background:#0891b2"></span>BTS</button><button class="fb" style="--fc:#e8334a" onclick="filtrarCanal('IMCOFI',this)"><span style="background:#e8334a"></span>IMCOFI</button><button class="fb" style="--fc:#5b5ef4" onclick="filtrarCanal('OTRAS CADENAS',this)"><span style="background:#5b5ef4"></span>OTRAS CADENAS</button><button class="fb" style="--fc:#a259ff" onclick="filtrarCanal('ECOMMERCE',this)"><span style="background:#a259ff"></span>ECOMMERCE</button><button class="fb" style="--fc:#0ea87a" onclick="filtrarCanal('ÉXITO',this)"><span style="background:#0ea87a"></span>ÉXITO</button><button class="fb" style="--fc:#e8620a" onclick="filtrarCanal('CATALOGO',this)"><span style="background:#e8620a"></span>CATALOGO</button>
+  </div>
+  <div class="crow c21">
+    <div class="ccard">
+      <div class="chead"><div><div class="ctit" id="cBarTit">Ventas por Canal</div><div class="csub">Millones COP acumulado</div></div></div>
+      <div style="position:relative;height:300px"><canvas id="cCanalBar"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="chead"><div><div class="ctit">Participación en Ventas</div><div class="csub">% sobre ventas totales</div></div></div>
+      <div style="position:relative;height:300px"><canvas id="cCanalPie"></canvas></div>
+    </div>
+  </div>
+  <div class="tcard"><table>
+    <thead><tr>
+      <th style="text-align:left">Canal</th>
+      <th>Ventas</th><th>% Part.</th><th>Costo Merc.</th>
+      <th>Util. Bruta</th><th>% Margen</th><th>Gastos Op.</th><th>Resultado Op.</th>
+    </tr></thead>
+    <tbody id="canalTblBody"></tbody>
+  </table></div>
+</div>
+
+<!-- P&G MENSUAL -->
+<div id="tab-pyg" class="tab">
+  <p class="slbl">P&G Mensual — 2025</p>
+
+  <!-- TABLA P&G ARRIBA -->
+  <div class="ccard" style="margin-bottom:12px;overflow-x:auto">
+    <div class="chead"><div>
+      <div class="ctit">Estado de Pérdidas y Ganancias</div>
+      <div class="csub">Millones COP — 2025</div>
+    </div></div>
+    <table class="tbl" style="min-width:900px">
+      <thead><tr>
+        <th style="text-align:left;min-width:200px">Concepto</th>
+        <th>Ene</th><th>Feb</th><th>Mar</th><th>Abr</th><th>May</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dic</th>
+        <th style="border-left:2px solid var(--border)">TOTAL</th>
+      </tr></thead>
+      <tbody id="pygTblFull"></tbody>
+    </table>
+  </div>
+
+  <!-- GRÁFICAS ABAJO -->
+  <div class="crow c21">
+    <div class="ccard">
+      <div class="chead"><div>
+        <div class="ctit">Tendencias 2025</div>
+        <div class="csub">Ventas · Gastos Op. · Util. Bruta (millones COP)</div>
+      </div></div>
+      <div style="position:relative;height:210px"><canvas id="cLine2"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="chead"><div><div class="ctit">Resumen Anual</div><div class="csub">Totales acumulados 2025</div></div></div>
+      <div class="srow"><span class="sname">Ventas Netas</span><span class="sval">$21.675,6 M</span></div>
+      <div class="srow"><span class="sname">(-) Costo Mercancía</span><span class="sval neg">$11.357,4 M</span></div>
+      <div class="srow"><span class="sname">Utilidad Bruta</span><span class="sval" style="color:#0ea87a">$10.318,3 M</span></div>
+      <div class="srow"><span class="sname">(-) Gastos Operac.</span><span class="sval neg">$11.084,2 M</span></div>
+      <div class="srow"><span class="sname">Utilidad Operativa</span><span class="sval" style="color:#e8334a">-$765,9 M</span></div>
+      <div class="srow"><span class="sname">(+/-) Gtos No Operac.</span><span class="sval" style="color:#0ea87a">$101,8 M</span></div>
+      <div class="srow"><span class="sname">Utilidad Antes Imp.</span><span class="sval" style="color:#e8334a">-$664,1 M</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- TIENDAS -->
+<div id="tab-tiendas" class="tab">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:4px">
+    <p class="slbl" style="margin:0">Indicadores por Tienda — Acumulado 2025</p>
+    <div style="display:flex;align-items:center;gap:10px">
+      <label style="font-size:12px;color:var(--mut);font-weight:600">Filtrar tienda:</label>
+      <select id="tFiltroSel" onchange="filtrarTienda(this.value)"
+        style="padding:7px 32px 7px 12px;border:1.5px solid var(--bdr);border-radius:8px;background:var(--sur);color:var(--txt);font-size:13px;font-family:inherit;cursor:pointer;appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22 viewBox=%220 0 12 8%22><path d=%22M1 1l5 5 5-5%22 stroke=%22%237a849a%22 stroke-width=%221.8%22 fill=%22none%22 stroke-linecap=%22round%22/></svg>');background-repeat:no-repeat;background-position:right 10px center;min-width:180px">
+        <option value="TODAS">Todas las tiendas</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kgrid" style="margin-bottom:16px">
+    <div class="kcard"><div class="klbl">Ingresos Totales</div>
+      <div class="kval" style="color:var(--acc)">$6,180.8 M</div>
+      <div class="ksub">millones COP</div>
+      <div class="kchg neu">30 tiendas</div></div>
+    <div class="kcard"><div class="klbl">Utilidad Bruta</div>
+      <div class="kval" style="color:var(--acc3)">$3,488.5 M</div>
+      <div class="ksub">Margen 56.4%</div>
+      <div class="kchg neu">millones COP</div></div>
+    <div class="kcard"><div class="klbl">Utilidad Operativa</div>
+      <div class="kval" style="color:var(--acc4)">$-19.4 M</div>
+      <div class="ksub">sobre ingresos</div>
+      <div class="kchg neg">▼ Margen -0.3%</div></div>
+    <div class="kcard"><div class="klbl">Tiendas Rentables</div>
+      <div class="kval" style="color:var(--acc)">12</div>
+      <div class="ksub">de 30 tiendas</div>
+      <div class="kchg neg">18 con pérdida operativa</div></div>
+  </div>
+
+  <!-- FILA 1: Ingresos scrollable + UO scrollable -->
+  <div class="crow c11" style="margin-bottom:12px">
+    <div class="ccard" style="padding:0;display:flex;flex-direction:column;overflow:visible">
+      <div class="chead" style="padding:16px 20px 10px">
+        <div><div class="ctit">Ingresos por Tienda</div>
+        <div class="csub">Millones COP · mayor a menor</div></div>
+      </div>
+      <div id="tIngScroll" style="overflow-y:auto;max-height:440px;overflow-x:visible;padding:0 12px 12px">
+        <div style="position:relative;height:1080px">
+          <canvas id="cTIngBar"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="ccard" style="padding:0;display:flex;flex-direction:column;overflow:visible">
+      <div class="chead" style="padding:16px 20px 10px">
+        <div><div class="ctit">Utilidad Operativa por Tienda</div>
+        <div class="csub">Verde = rentable · Rojo = pérdida (M COP)</div></div>
+      </div>
+      <div id="tUoScroll" style="overflow-y:auto;max-height:440px;overflow-x:visible;padding:0 12px 12px">
+        <div style="position:relative;height:1080px">
+          <canvas id="cTUoBar"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILA 2: Líneas comparativas por tienda -->
+  <div class="ccard" style="margin-bottom:12px">
+    <div class="chead"><div>
+      <div class="ctit" id="tLineTit">Comparativo de Indicadores — Todas las Tiendas</div>
+      <div class="csub">Ingresos · Util. Bruta · Util. Operativa · EBITDA% (eje dcho.)</div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="tbtn on" style="padding:4px 10px;font-size:11px" onclick="setLineMode('barras',this)">Barras</button>
+      <button class="tbtn" style="padding:4px 10px;font-size:11px" onclick="setLineMode('lineas',this)">Líneas</button>
+    </div>
+    </div>
+    <div style="position:relative;height:300px"><canvas id="cTLine"></canvas></div>
+  </div>
+
+  <!-- FILA 3: Pie ingresos + Pie utilidad bruta -->
+  <div class="crow c11" style="margin-bottom:12px">
+    <div class="ccard">
+      <div class="chead"><div>
+        <div class="ctit">Participación en Ingresos</div>
+        <div class="csub">% sobre ingresos totales por tienda</div>
+      </div></div>
+      <div style="position:relative;height:320px"><canvas id="cTPieIng"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="chead"><div>
+        <div class="ctit">Participación en Utilidad Bruta</div>
+        <div class="csub">% sobre utilidad bruta total por tienda</div>
+      </div></div>
+      <div style="position:relative;height:320px"><canvas id="cTPieUB"></canvas></div>
+    </div>
+  </div>
+
+  <!-- TABLA -->
+  <div class="ccard" style="overflow-x:auto">
+    <div class="chead"><div>
+      <div class="ctit">Resumen por Tienda</div>
+      <div class="csub">Millones COP — Acumulado 2025</div>
+    </div></div>
+    <table class="tbl" style="min-width:780px">
+      <thead><tr>
+        <th style="text-align:left">Tienda</th>
+        <th>Ingresos</th><th>Costo</th><th>Util. Bruta</th>
+        <th>% Margen</th><th>Gastos Op.</th><th>Util. Operativa</th><th>EBITDA %</th>
+      </tr></thead>
+      <tbody id="tTiendas"></tbody>
+    </table>
+  </div>
+</div>
+</main>
+<script>
+// ── DATOS ─────────────────────────────────────────────────────────────────────
+const meses    = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+const ventas   = [1292.0,1125.5,1475.4,2190.0,1696.3,1346.9,1525.5,1600.5,2283.2,2556.1,2032.9,2551.3];
+const costo    = [637.6,569.9,734.5,1177.5,851.7,642.0,729.1,806.6,1248.3,1242.7,1037.0,1680.5];
+const utilB    = [654.4,555.7,740.9,1012.5,844.6,704.9,796.4,793.9,1034.9,1313.4,995.9,870.8];
+const gastosOp = [883.3,879.7,895.3,936.6,926.9,903.0,917.7,869.3,858.7,924.8,913.6,1175.3];
+const gtosNo   = [30.3,7.5,23.8,37.4,22.9,15.2,-4.4,16.7,12.9,8.6,-24.2,-44.9];
+const ppto     = [1412.1,1337.3,1577.9,2141.2,1979.2,1708.4,1818.2,1831.2,2291.6,2657.6,2395.7,2913.9];
+const utilOp   = [-228.9,-324.0,-154.4,75.9,-82.3,-198.1,-121.3,-75.4,176.2,388.6,82.3,-304.5];
+const canales  = [
+  {name:"OTROS NACIONALES",ventas:6236.0,costo:3490.4,ub:2745.6,gop:2767.0,color:"#f7794f"},
+  {name:"PUNTO VENTA",ventas:5489.1,costo:2540.7,ub:2948.3,gop:3547.1,color:"#d49600"},
+  {name:"MARROCAR",ventas:3319.6,costo:1121.3,ub:2198.3,gop:2545.6,color:"#7c3aed"},
+  {name:"OTROS EXTERIOR",ventas:1837.8,costo:1249.1,ub:588.7,gop:484.8,color:"#65a30d"},
+  {name:"BTS",ventas:1480.2,costo:920.2,ub:560.0,gop:494.1,color:"#0891b2"},
+  {name:"IMCOFI",ventas:1360.1,costo:995.9,ub:364.2,gop:358.8,color:"#e8334a"},
+  {name:"OTRAS CADENAS",ventas:698.6,costo:380.0,ub:318.6,gop:246.4,color:"#5b5ef4"},
+  {name:"ECOMMERCE",ventas:610.5,costo:289.8,ub:320.6,gop:387.1,color:"#a259ff"},
+  {name:"\u00c9XITO",ventas:481.0,costo:273.9,ub:207.1,gop:169.6,color:"#0ea87a"},
+  {name:"CATALOGO",ventas:162.8,costo:95.9,ub:67.0,gop:83.5,color:"#e8620a"}
+];
+const totVentas = 21675.6;
+const utilAnt  = utilOp.map((v,i) => v + gtosNo[i]);
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const sf = v => (v<0?'-$':'$') + Math.abs(v).toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g,'.') + ' M';
+const sf0 = v => (v<0?'-$':'$') + Math.abs(v).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,'.') + ' M';
+const dynCol = v => v>=0 ? '#0ea87a' : '#e8334a';
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function showTab(id, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
+  btn.classList.add('on');
+  // Resize charts after tab is visible so canvas gets correct dimensions
+  setTimeout(()=>{
+    [chVentas,chEbitda,chCostoPie,chLine,chLine2,chCanalBar,chCanalPie,chTIngBar,chTUoBar,chTPieIng,chTPieUB,chTLine]
+      .forEach(ch=>{ if(ch) ch.resize(); });
+  }, 80);
+}
+
+// ── PYG TABLE ─────────────────────────────────────────────────────────────────
+function buildPygTable(tbodyId, arr) {
+  const body = document.getElementById(tbodyId);
+  if(!body) return;
+  body.innerHTML = '';
+  const uoArr = ventas.map((_,i) => utilB[i]-gastosOp[i]);
+  const uaArr = uoArr.map((v,i) => v+gtosNo[i]);
+  [
+    {lbl:'Ventas Netas',         data:ventas,   cls:'',    bold:false},
+    {lbl:'(-) Costo Mercancía',  data:costo,    cls:'neg', bold:false},
+    {lbl:'Utilidad Bruta',       data:utilB,    cls:'pos', bold:true,  bg:'rgba(14,168,122,.05)'},
+    {lbl:'(-) Gastos Operac.',   data:gastosOp, cls:'neg', bold:false},
+    {lbl:'Utilidad Operativa',   data:uoArr,    cls:'dyn', bold:true,  bg:'rgba(91,94,244,.05)'},
+    {lbl:'(+/-) Gtos No Operac.',data:gtosNo,   cls:'dyn', bold:false},
+    {lbl:'Utilidad Antes Imp.',  data:uaArr,    cls:'dyn', bold:true,  bg:'rgba(232,51,74,.05)'},
+  ].forEach(r => {
+    const tot = arr.reduce((s,i) => s+r.data[i], 0);
+    const gc  = v => r.cls==='dyn'?(v>=0?'pos':'neg'):r.cls;
+    const fv  = v => r.bold ? `<b>${sf(v)}</b>` : sf(v);
+    const cells = arr.map(i => `<td class="${gc(r.data[i])}">${fv(r.data[i])}</td>`).join('');
+    const bg = r.bg ? `style="background:${r.bg}"` : '';
+    body.innerHTML += `<tr ${bg}><td ${r.bold?'style="font-weight:700"':''}>${r.lbl}</td>${cells}<td class="${gc(tot)}" style="border-left:2px solid var(--bdr)">${fv(tot)}</td></tr>`;
+  });
+}
+
+// ── FILTRO MES ────────────────────────────────────────────────────────────────
+function filtMes(idx, btn) {
+  document.querySelectorAll('.mbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  const arr = idx<0 ? meses.map((_,i)=>i) : [idx];
+  const vV=arr.reduce((s,i)=>s+ventas[i],0), vC=arr.reduce((s,i)=>s+costo[i],0),
+        vUB=arr.reduce((s,i)=>s+utilB[i],0), vGO=arr.reduce((s,i)=>s+gastosOp[i],0),
+        vGN=arr.reduce((s,i)=>s+gtosNo[i],0), vPP=arr.reduce((s,i)=>s+ppto[i],0);
+  const vUO=vUB-vGO, vUA=vUO+vGN, cp=vPP?vV/vPP*100:0, br=vV-vPP;
+  // KPI
+  document.getElementById('kv0').textContent=sf0(vV);
+  document.getElementById('ks0').textContent=idx<0?'millones COP':meses[idx]+' 2025';
+  document.getElementById('kv1').textContent=sf0(vUB);
+  document.getElementById('ks1').textContent='Margen '+(vV?vUB/vV*100:0).toFixed(1)+'%';
+  const kv2=document.getElementById('kv2'); kv2.textContent=sf0(vUO); kv2.style.color=dynCol(vUO);
+  document.getElementById('ks2').textContent='Margen '+(vV?vUO/vV*100:0).toFixed(1)+'%';
+  const kv3=document.getElementById('kv3'); kv3.textContent=sf0(vUA); kv3.style.color=dynCol(vUA);
+  document.getElementById('ks3').textContent='Margen '+(vV?vUA/vV*100:0).toFixed(1)+'%';
+  document.getElementById('kv4').textContent=cp.toFixed(1)+'%';
+  const kc4=document.getElementById('kchg4');
+  kc4.textContent=(br>=0?'▲ ':'▼ ')+sf0(br)+' brecha'; kc4.className='kchg '+(br>=0?'up':'dn');
+  // Bar chart
+  const lbl=idx<0?meses:[meses[idx]];
+  chVentas.data.labels=lbl; chVentas.data.datasets[0].data=idx<0?ventas:[ventas[idx]];
+  chVentas.data.datasets[1].data=idx<0?ppto:[ppto[idx]]; chVentas.update();
+  // Ebitda chart
+  const uoD=idx<0?utilOp:[utilOp[idx]];
+  chEbitda.data.labels=lbl; chEbitda.data.datasets[0].data=uoD;
+  chEbitda.data.datasets[0].backgroundColor=uoD.map(v=>v>=0?'rgba(14,168,122,.8)':'rgba(232,51,74,.8)');
+  chEbitda.update();
+  // Line chart
+  chLine.data.labels=lbl;
+  chLine.data.datasets[0].data=idx<0?ventas:[ventas[idx]];
+  chLine.data.datasets[1].data=idx<0?gastosOp:[gastosOp[idx]];
+  chLine.data.datasets[2].data=idx<0?utilB:[utilB[idx]]; chLine.update();
+  // Costo pie
+  costoTotal=vV; chCostoPie.data.datasets[0].data=[vC,vGO,Math.abs(vGN)]; chCostoPie.update();
+  // Ring
+  const off=(301.6*(1-Math.min(cp/100,1))).toFixed(1);
+  const rc=cp>=100?'#0ea87a':cp>=85?'#e8620a':'#e8334a';
+  document.getElementById('ringArc').setAttribute('stroke-dashoffset',off);
+  document.getElementById('ringArc').setAttribute('stroke',rc);
+  document.getElementById('ringPct').textContent=cp.toFixed(1)+'%';
+  document.getElementById('ringPct').style.color=rc;
+  document.getElementById('ringSub').textContent=idx<0?'Cumplimiento acumulado anual':'Cumplimiento '+meses[idx];
+  document.getElementById('rPpto').textContent=sf0(vPP);
+  document.getElementById('rReal').textContent=sf0(vV);
+  const dEl=document.getElementById('rDiff'); dEl.textContent=sf0(br); dEl.style.color=dynCol(br);
+  // Resumen stats
+  const vals=[vV,vC,vUB,vGO,vUO,vGN,vUA];
+  ['rs0','rs1','rs2','rs3','rs4','rs5','rs6'].forEach((id,i)=>{
+    const el=document.getElementById(id); el.textContent=sf(vals[i]);
+    if(i>=2) el.style.color=dynCol(vals[i]);
+  });
+  document.getElementById('rs7').textContent=(vV?vUB/vV*100:0).toFixed(1)+'%';
+  const m8=document.getElementById('rs8'),mg=vV?vUO/vV*100:0;
+  m8.textContent=mg.toFixed(1)+'%'; m8.style.color=dynCol(vUO);
+  // PYG table
+  buildPygTable('pygTblRes', arr);
+}
+
+// ── CHART: Ventas vs Ppto ─────────────────────────────────────────────────────
+// Variaciones calculadas
+const varVsPpto   = ventas.map((v,i) => ppto[i]             ? +((v/ppto[i]-1)*100).toFixed(1)          : null);
+const varMensual  = ventas.map((v,i) => i===0||!ventas[i-1] ? null : +((v/ventas[i-1]-1)*100).toFixed(1));
+const varPptoMens = ppto.map((v,i)   => i===0||!ppto[i-1]   ? null : +((v/ppto[i-1]-1)*100).toFixed(1));
+const varAcum     = ventas.map((_,i) => {
+  const sv=ventas.slice(0,i+1).reduce((a,b)=>a+b,0);
+  const sp=ppto.slice(0,i+1).reduce((a,b)=>a+b,0);
+  return sp ? +((sv/sp-1)*100).toFixed(1) : null;
+});
+
+chVentas = new Chart(document.getElementById('cVentas'), {
+  type:'bar',
+  data:{ labels:meses, datasets:[
+    {label:'Real',              data:ventas,      backgroundColor:'rgba(14,168,122,.82)', borderRadius:5, borderSkipped:false, yAxisID:'y'},
+    {label:'Ppto',              data:ppto,        backgroundColor:'rgba(91,94,244,.2)', borderColor:'rgba(91,94,244,.5)', borderWidth:1.5, borderRadius:5, borderSkipped:false, yAxisID:'y'},
+    {label:'Real vs Ppto',      data:varVsPpto,   type:'line', borderColor:'#e8620a', backgroundColor:'rgba(232,98,10,.12)', borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'#e8620a', tension:0.3, fill:false, yAxisID:'y2'},
+    {label:'Var. Mensual Real', data:varMensual,  type:'line', borderColor:'#d49600', backgroundColor:'rgba(212,150,0,.10)', borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'#d49600', tension:0.3, fill:false, yAxisID:'y2', borderDash:[4,3]},
+    {label:'Var. Mensual Ppto', data:varPptoMens, type:'line', borderColor:'#a259ff', backgroundColor:'rgba(162,89,255,.10)', borderWidth:2, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'#a259ff', tension:0.3, fill:false, yAxisID:'y2', borderDash:[2,4]},
+    {label:'Acum. Real vs Ppto',data:varAcum,     type:'line', borderColor:'#e8334a', backgroundColor:'rgba(232,51,74,.08)',  borderWidth:2.5, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:'#e8334a', tension:0.3, fill:false, yAxisID:'y2'}
+  ]},
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    interaction:{mode:'index', intersect:false},
+    plugins:{
+      legend:{
+        display:true, position:'bottom',
+        labels:{usePointStyle:true, pointStyleWidth:8, color:'#7a849a', font:{size:11}, padding:16,
+          generateLabels(chart){
+            return chart.data.datasets.map((ds,i)=>({
+              text: ds.label,
+              fillStyle: ds.backgroundColor instanceof Array ? ds.backgroundColor[0] : ds.backgroundColor,
+              strokeStyle: ds.borderColor || ds.backgroundColor,
+              lineWidth: ds.type==='line' ? 2 : 0,
+              pointStyle: ds.type==='line' ? 'line' : 'rect',
+              hidden: false, index: i
+            }));
+          }
+        }
+      },
+      tooltip:{
+        backgroundColor:'#fff', titleColor:'#1a2035', bodyColor:'#1a2035',
+        borderColor:'#dde3ee', borderWidth:1, padding:12,
+        callbacks:{
+          label(c){
+            if(c.datasetIndex <= 1) return ` ${c.dataset.label}: ${sf(c.parsed.y)}`;
+            const sign = c.parsed.y >= 0 ? '+' : '';
+            return ` ${c.dataset.label}: ${sign}${c.parsed.y}%`;
+          }
+        }
+      }
+    },
+    scales:{
+      x:{ grid:{display:false} },
+      y:{
+        position:'left', grid:{color:'rgba(0,0,0,.05)'},
+        ticks:{callback:v=>'$'+v+' M'},
+        afterDataLimits(s){ s.max*=1.12 }
+      },
+      y2:{
+        position:'right', grid:{drawOnChartArea:false},
+        ticks:{callback:v=> v+'%', color:'#7a849a', font:{size:10}},
+        border:{dash:[4,4]},
+        afterDataLimits(s){
+          const abs = Math.max(Math.abs(s.min), Math.abs(s.max), 10);
+          s.min = -(abs*1.3); s.max = abs*1.3;
+        }
+      }
+    }
+  }
+});
+// ── CHART: Utilidad Operativa ─────────────────────────────────────────────────
+const chEbitda = new Chart(document.getElementById('cEbitda'), {
+  type:'bar',
+  data:{ labels:meses, datasets:[
+    {label:'Util. Op.',data:utilOp,backgroundColor:utilOp.map(v=>v>=0?'rgba(14,168,122,.8)':'rgba(232,51,74,.8)'),borderRadius:5,borderSkipped:false}
+  ]},
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},
+      tooltip:{backgroundColor:'#fff',titleColor:'#1a2035',bodyColor:'#7a849a',borderColor:'#dde3ee',borderWidth:1,
+        callbacks:{label:c=>` Util. Op: ${sf(c.parsed.y)}`}}},
+    scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>'$'+v+' M'}}},
+    animation:{onComplete(){
+      const ctx=this.ctx; ctx.save();
+      this.getDatasetMeta(0).data.forEach((bar,i)=>{
+        const v=utilOp[i];
+        ctx.fillStyle=v>=0?'#0a8f68':'#c0202f';ctx.font='bold 9px Arial';
+        ctx.textAlign='center';ctx.textBaseline=v>=0?'bottom':'top';
+        ctx.fillText(sf0(v),bar.x,v>=0?bar.y-2:bar.y+2);
+      });
+      ctx.restore();
+    }}
+  }
+});
+
+// ── CHART: Costo Doughnut ─────────────────────────────────────────────────────
+let costoTotal = 21675.6;
+const costoColors = ['#e8620a','#d49600','#5b5ef4'];
+function drawCostoPieLabels(chart) {
+  const ctx=chart.ctx; ctx.save();
+  const meta=chart.getDatasetMeta(0), data=chart.data.datasets[0].data;
+  const W=chart.canvas.offsetWidth||200, H=chart.canvas.offsetHeight||200;
+  const legendH=40; // espacio reservado para leyenda abajo
+  const items=[];
+  meta.data.forEach((arc,i)=>{
+    const span=arc.endAngle-arc.startAngle;
+    if(!data[i]) return; // solo omitir si valor es cero
+    const tot=data.reduce((s,v)=>s+(v||0),0);
+    const pct=(data[i]/tot*100).toFixed(1);
+    const val='$'+Number(data[i]).toFixed(0)+' M';
+    const angle=arc.startAngle+span/2, isR=Math.cos(angle)>=0;
+    const r1=arc.outerRadius+8, r2=arc.outerRadius+35;
+    items.push({i,pct,val,isR,col:chart.data.datasets[0].backgroundColor[i],arc,
+      x1:arc.x+Math.cos(angle)*r1, y1:arc.y+Math.sin(angle)*r1,
+      x2:arc.x+Math.cos(angle)*r2, y2:arc.y+Math.sin(angle)*r2});
+  });
+  // Separar etiquetas del mismo lado
+  for(let p=0;p<8;p++) for(let a=0;a<items.length-1;a++) for(let b=a+1;b<items.length;b++) {
+    if(items[a].isR!==items[b].isR) continue;
+    const gap=Math.abs(items[b].y2-items[a].y2), minG=44;
+    if(gap<minG){ items[a].y2-=(minG-gap)/2; items[b].y2+=(minG-gap)/2; }
+  // Avoid going off canvas
+  items.forEach(it=>{ it.y2=Math.max(16, Math.min(H-legendH-8, it.y2)); });
+  }
+  // Clamp: arriba mínimo 18px, abajo máximo H-legendH-10
+  items.forEach(it=>{ it.y2=Math.max(18, Math.min(H-legendH-10, it.y2)); });
+  // Dibujar
+  items.forEach(({i,pct,val,isR,col,x1,y1,x2,y2})=>{
+    const ex=isR?x2+16:x2-16;
+    ctx.font='bold 10px Arial'; const w1=ctx.measureText(val).width;
+    ctx.font='9px Arial';       const w2=ctx.measureText(pct+'%').width;
+    const bw=Math.max(w1,w2)+12, bh=30;
+    const bx=isR?ex+2:ex-bw-2, by=y2-bh/2;
+    // línea conectora
+    ctx.strokeStyle=col; ctx.lineWidth=1.5; ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.lineTo(ex,y2); ctx.stroke();
+    // caja
+    ctx.fillStyle=col+'22'; ctx.strokeStyle=col; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.roundRect(bx,by,bw,bh,4); ctx.fill(); ctx.stroke();
+    // texto
+    ctx.fillStyle=col; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.font='bold 10px Arial'; ctx.fillText(val, bx+bw/2, by+9);
+    ctx.font='9px Arial';       ctx.fillText(pct+'%', bx+bw/2, by+22);
+  });
+  ctx.restore();
+}
+
+const chCostoPie = new Chart(document.getElementById('cCostoPie'), {
+  type:'doughnut',
+  data:{ labels:['Costo Mercancía','Gastos Operac.','Gtos No Operac.'],
+    datasets:[{data:[11357.4,11084.2,101.8],backgroundColor:costoColors,borderWidth:3,borderColor:'#fff',hoverOffset:8}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'52%',
+    layout:{padding:{top:24,bottom:24,left:90,right:90}},
+    plugins:{
+      legend:{position:'bottom',labels:{padding:12,usePointStyle:true,pointStyleWidth:8,color:'#7a849a',font:{size:11}}},
+      tooltip:{backgroundColor:'#fff',titleColor:'#1a2035',bodyColor:'#7a849a',borderColor:'#dde3ee',borderWidth:1,
+        callbacks:{label:c=>` ${c.label}: ${sf(c.parsed)} (${(costoTotal>0?c.parsed/costoTotal*100:0).toFixed(1)}% ventas)`}}},
+    animation:{onComplete(){drawCostoPieLabels(this);}}},
+  plugins:[{id:'cl',afterUpdate(ch){drawCostoPieLabels(ch);}}]
+});
+
+// ── CHART: Líneas ─────────────────────────────────────────────────────────────
+const lineOpts = {
+  responsive:true,maintainAspectRatio:false,
+  interaction:{mode:'index',intersect:false},
+  plugins:{
+    legend:{display:true,position:'bottom',labels:{usePointStyle:true,pointStyleWidth:8,color:'#7a849a',font:{size:11},padding:14}},
+    tooltip:{mode:'index',intersect:false,backgroundColor:'#fff',titleColor:'#1a2035',bodyColor:'#1a2035',
+      borderColor:'#dde3ee',borderWidth:1,padding:10,callbacks:{label:c=>'  '+c.dataset.label+': '+sf(c.parsed.y)}}},
+  scales:{
+    x:{grid:{display:false},ticks:{color:'#7a849a'}},
+    y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{color:'#7a849a',callback:v=>'$'+v+' M'}}
+  }
+};
+const mkLineDs = () => [
+  {label:'Ventas',data:[...ventas],borderColor:'#0ea87a',backgroundColor:'rgba(14,168,122,.07)',fill:true,tension:.4,borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#0ea87a'},
+  {label:'Gastos Op.',data:[...gastosOp],borderColor:'#e8334a',backgroundColor:'rgba(232,51,74,.04)',fill:true,tension:.4,borderWidth:2,pointRadius:4,pointBackgroundColor:'#e8334a'},
+  {label:'Util. Bruta',data:[...utilB],borderColor:'#5b5ef4',backgroundColor:'transparent',fill:false,tension:.4,borderWidth:2,pointRadius:4,pointBackgroundColor:'#5b5ef4',borderDash:[5,3]}
+];
+const chLine  = new Chart(document.getElementById('cLine'),  {type:'line',data:{labels:[...meses],datasets:mkLineDs()},options:lineOpts});
+const chLine2 = new Chart(document.getElementById('cLine2'), {type:'line',data:{labels:[...meses],datasets:mkLineDs()},options:lineOpts});
+
+// ── CANAL KPI ─────────────────────────────────────────────────────────────────
+function updateCanalKPIs(nombre) {
+  let vV,vUB,vGO;
+  if(nombre==='TODOS'){
+    vV=totVentas; vUB=canales.reduce((s,c)=>s+c.ub,0); vGO=canales.reduce((s,c)=>s+c.gop,0);
+    document.getElementById('ck0s').textContent='100% del total';
+  }else{
+    const c=canales.find(x=>x.name===nombre);
+    vV=c.ventas; vUB=c.ub; vGO=c.gop;
+    document.getElementById('ck0s').textContent=(totVentas?vV/totVentas*100:0).toFixed(1)+'% del total';
+  }
+  const vRes=vUB-vGO;
+  document.getElementById('ck0').textContent=sf0(vV);
+  document.getElementById('ck1').textContent=sf0(vUB);
+  document.getElementById('ck1s').textContent='Margen '+(vV?vUB/vV*100:0).toFixed(1)+'%';
+  document.getElementById('ck2').textContent=sf0(vGO);
+  document.getElementById('ck2s').textContent=(vV?vGO/vV*100:0).toFixed(1)+'% ventas';
+  const ck3=document.getElementById('ck3'); ck3.textContent=sf0(vRes); ck3.style.color=dynCol(vRes);
+  document.getElementById('ck3s').textContent='Margen '+(vV?vRes/vV*100:0).toFixed(1)+'%';
+}
+
+// ── CANAL BAR & PIE ───────────────────────────────────────────────────────────
+function drawCanalPieLabels(chart) {
+  const ctx=chart.ctx; ctx.save();
+  const meta=chart.getDatasetMeta(0), data=chart.data.datasets[0].data;
+  const W=chart.canvas.offsetWidth||200, H=chart.canvas.offsetHeight||200;
+  const legendH=canales.length>6?0:50; // sin leyenda si hay muchos canales
+  const tot=data.reduce((s,v)=>s+(v||0),0);
+  const items=[];
+  meta.data.forEach((arc,i)=>{
+    const span=arc.endAngle-arc.startAngle;
+    if(span<0.25) return; // omitir segmentos pequeños (<~14%)
+    const pct=(data[i]/tot*100).toFixed(1);
+    const angle=arc.startAngle+span/2, isR=Math.cos(angle)>=0;
+    const r1=arc.outerRadius+6, r2=arc.outerRadius+28;
+    items.push({i,pct,isR,col:chart.data.datasets[0].backgroundColor[i],arc,
+      x1:arc.x+Math.cos(angle)*r1, y1:arc.y+Math.sin(angle)*r1,
+      x2:arc.x+Math.cos(angle)*r2, y2:arc.y+Math.sin(angle)*r2});
+  });
+  // Separar etiquetas del mismo lado con gap mínimo de 32px
+  for(let p=0;p<10;p++) for(let a=0;a<items.length-1;a++) for(let b=a+1;b<items.length;b++) {
+    if(items[a].isR!==items[b].isR) continue;
+    const gap=Math.abs(items[b].y2-items[a].y2), minG=32;
+    if(gap<minG){ items[a].y2-=(minG-gap)/2; items[b].y2+=(minG-gap)/2; }
+  }
+  // Clamp dentro del canvas (sin solapar leyenda)
+  items.forEach(it=>{ it.y2=Math.max(16, Math.min(H-legendH-12, it.y2)); });
+  // Dibujar
+  items.forEach(({i,pct,isR,col,x1,y1,x2,y2})=>{
+    const ex=isR?x2+14:x2-14;
+    const label=pct+'%';
+    ctx.font='bold 10px Arial'; const bw=ctx.measureText(label).width+10, bh=18;
+    const bx=isR?ex+2:ex-bw-2, by=y2-bh/2;
+    ctx.strokeStyle=col; ctx.lineWidth=1.4;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.lineTo(ex,y2); ctx.stroke();
+    ctx.fillStyle=col+'25'; ctx.strokeStyle=col; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.roundRect(bx,by,bw,bh,4); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=col; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(label, bx+bw/2, by+bh/2);
+  });
+  ctx.restore();
+}
+// ── FILTRO CANAL ──────────────────────────────────────────────────────────────
+function filtrarCanal(nombre, btn) {
+  document.querySelectorAll('.fb').forEach(b=>{b.classList.remove('on');b.style.removeProperty('background');b.style.removeProperty('border-color');});
+  btn.classList.add('on');
+  const c=canales.find(x=>x.name===nombre);
+  if(c){btn.style.background=c.color;btn.style.borderColor=c.color;}
+  updateCanalKPIs(nombre);
+  const filt=nombre==='TODOS'?canales:[canales.find(x=>x.name===nombre)].filter(Boolean);
+  chCanalBar.data.labels=filt.map(c=>c.name);
+  chCanalBar.data.datasets[0].data=filt.map(c=>c.ventas);
+  chCanalBar.data.datasets[0].backgroundColor=filt.map(c=>c.color+'cc');
+  chCanalBar.data.datasets[1].data=filt.map(c=>c.ub);
+  chCanalBar.data.datasets[1].backgroundColor=filt.map(c=>c.color+'44');
+  chCanalBar.update();
+  chCanalPie.data.datasets[0].backgroundColor=canales.map(c=>nombre==='TODOS'?c.color:c.name===nombre?c.color:c.color+'33');
+  chCanalPie.data.datasets[0].borderWidth=canales.map(c=>nombre==='TODOS'?2:c.name===nombre?3:1);
+  chCanalPie.update();
+  document.getElementById('cBarTit').textContent=nombre==='TODOS'?'Ventas por Canal':'Canal: '+nombre;
+  document.querySelectorAll('#canalTblBody tr').forEach(tr=>{
+    tr.style.opacity=(nombre==='TODOS'||tr.dataset.canal===nombre)?'1':'0.3';
+  });
+}
+
+// ── TABLA CANALES ─────────────────────────────────────────────────────────────
+(()=>{
+  const tbody=document.getElementById('canalTblBody');
+  canales.forEach(c=>{
+    const res=c.ub-c.gop; const tr=document.createElement('tr'); tr.dataset.canal=c.name;
+    tr.innerHTML=`<td style="text-align:left;font-weight:600"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${c.color};margin-right:7px"></span>${c.name}</td>
+      <td>${sf(c.ventas)}</td><td>${(totVentas?c.ventas/totVentas*100:0).toFixed(1)}%</td>
+      <td class="neg">${sf(c.costo)}</td><td class="${c.ub>=0?'pos':'neg'}">${sf(c.ub)}</td>
+      <td>${(c.ventas?c.ub/c.ventas*100:0).toFixed(1)}%</td>
+      <td class="neg">${sf(c.gop)}</td><td class="${res>=0?'pos':'neg'}">${sf(res)}</td>`;
+    tbody.appendChild(tr);
+  });
+  const totUB=canales.reduce((s,c)=>s+c.ub,0),totGOP=canales.reduce((s,c)=>s+c.gop,0),
+        totC=canales.reduce((s,c)=>s+c.costo,0),totRes=totUB-totGOP;
+  const tr=document.createElement('tr'); tr.className='tot';
+  tr.innerHTML=`<td style="text-align:left">TOTAL</td><td>${sf(totVentas)}</td><td>100%</td>
+    <td class="neg">${sf(totC)}</td><td class="${totUB>=0?'pos':'neg'}">${sf(totUB)}</td>
+    <td>${(totVentas?totUB/totVentas*100:0).toFixed(1)}%</td>
+    <td class="neg">${sf(totGOP)}</td><td class="${totRes>=0?'pos':'neg'}">${sf(totRes)}</td>`;
+  tbody.appendChild(tr);
+})();
+
+// ── CANAL CHARTS ─────────────────────────────────────────────────────────────
+const chCanalBar = new Chart(document.getElementById('cCanalBar'), {
+  type:'bar',
+  data:{ labels:canales.map(c=>c.name), datasets:[
+    {label:'Ventas',data:canales.map(c=>c.ventas),backgroundColor:canales.map(c=>c.color+'cc'),borderRadius:5,borderSkipped:false},
+    {label:'Util. Bruta',data:canales.map(c=>c.ub),backgroundColor:canales.map(c=>c.color+'44'),borderRadius:5,borderSkipped:false}
+  ]},
+  options:{
+    responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    plugins:{
+      legend:{position:'bottom',labels:{usePointStyle:true,pointStyleWidth:8,color:'#7a849a',font:{size:11}}},
+      tooltip:{backgroundColor:'#fff',titleColor:'#1a2035',bodyColor:'#7a849a',borderColor:'#dde3ee',borderWidth:1,
+        callbacks:{label:ctx=>` ${ctx.dataset.label}: ${sf(ctx.parsed.x)}`}}
+    },
+    scales:{
+      x:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>sf(v)},afterDataLimits(s){s.max*=1.22}},
+      y:{grid:{display:false}}
+    },
+    animation:{onComplete(){
+      const ctx=this.ctx; ctx.save();
+      const m=this.getDatasetMeta(0);
+      if(!m.hidden) m.data.forEach((bar,i)=>{
+        const v=canales[i]?canales[i].ventas:0;
+        const pct=(totVentas?v/totVentas*100:0).toFixed(1)+'%';
+        ctx.fillStyle='#1a2035'; ctx.font='bold 9px Arial';
+        ctx.textAlign='left'; ctx.textBaseline='middle';
+        ctx.fillText(sf(v)+'  ('+pct+')', bar.x+5, bar.y);
+      });
+      ctx.restore();
+    }}
+  }
+});
+
+const chCanalPie = new Chart(document.getElementById('cCanalPie'), {
+  type:'doughnut',
+  data:{ labels:canales.map(c=>c.name), datasets:[{
+    data:canales.map(c=>c.ventas),
+    backgroundColor:canales.map(c=>c.color),
+    borderWidth:2, borderColor:'#fff', hoverOffset:8
+  }]},
+  options:{
+    responsive:true,maintainAspectRatio:false,cutout:'50%',
+    layout:{padding:{top:30,bottom:30,left:70,right:70}},
+    plugins:{
+      legend:{display:false},
+      tooltip:{backgroundColor:'#fff',titleColor:'#1a2035',bodyColor:'#7a849a',borderColor:'#dde3ee',borderWidth:1,
+        callbacks:{label:ctx=>{
+          const pct=(totVentas?ctx.parsed/totVentas*100:0).toFixed(1);
+          return ` ${ctx.label}: ${sf(ctx.parsed)} (${pct}%)`;
+        }}
+      }
+    },
+    animation:{onComplete(){ drawCanalPieLabels(this); }}
+  },
+  plugins:[{id:'cpl',afterUpdate(ch){ drawCanalPieLabels(ch); }}]
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+updateCanalKPIs('TODOS');
+buildPygTable('pygTblRes',  meses.map((_,i)=>i));
+buildPygTable('pygTblFull', meses.map((_,i)=>i));
+
+
+
+// ── TIENDAS DATA ──────────────────────────────────────────────────────────────
+const tNombres   = ["Ecommerce", "Guayabal", "Soacha", "Bazar", "Casa Blanca", "Tintal", "Plaza Central", "Tober\u00edn", "La 33", "Bosa", "Restrepo", "Itagu\u00ed", "Fabricato", "Americas", "Portal 80", "Guayaquil", "Kennedy", "Los Panches", "Envigado", "Catalogo", "Outlet Haby", "La Ceja", "Mall Plaza", "Tunal", "Arrayanes", "Rionegro", "Santa Fe", "Suba", "Carmen de Viboral", "Manizales"];
+const tIng       = [646.44, 403.79, 285.71, 284.15, 281.05, 251.16, 243.48, 242.23, 239.9, 235.37, 227.56, 226.94, 220.14, 211.73, 201.0, 185.73, 181.79, 178.1, 173.85, 171.47, 149.62, 144.91, 132.53, 128.73, 125.54, 122.73, 110.51, 110.37, 41.25, 23.03];
+const tUB        = [359.95, 237.72, 158.84, 138.96, 160.41, 143.97, 141.05, 140.92, 138.31, 132.21, 129.52, 128.53, 129.78, 119.65, 111.49, 112.84, 103.01, 102.26, 103.17, 75.39, 80.32, 83.03, 76.77, 71.85, 74.08, 71.41, 63.25, 62.88, 23.33, 13.68];
+const tUO        = [22.55, 71.26, -4.42, 62.76, 25.19, 30.32, 23.22, 8.38, -14.93, -13.91, -17.08, -13.33, -52.1, -12.37, -12.07, 29.61, -23.95, 17.8, 10.99, 5.19, 9.26, -5.35, -2.8, -20.45, -25.17, -12.46, -9.59, -56.97, -22.4, -16.62];
+const tPct       = [55.7, 58.9, 55.6, 48.9, 57.1, 57.3, 57.9, 58.2, 57.7, 56.2, 56.9, 56.6, 59.0, 56.5, 55.5, 60.8, 56.7, 57.4, 59.3, 44.0, 53.7, 57.3, 57.9, 55.8, 59.0, 58.2, 57.2, 57.0, 56.5, 59.4];
+const tEbitda    = [3.5, 17.6, -1.5, 22.1, 9.0, 12.1, 9.5, 3.5, -6.2, -5.9, -7.5, -5.9, -23.7, -5.8, -6.0, 15.9, -13.2, 10.0, 6.3, 3.0, 6.2, -3.7, -2.1, -15.9, -20.1, -10.1, -8.7, -51.6, -54.3, -72.2];
+const tGastos    = [337.39, 166.46, 163.25, 76.19, 135.22, 113.66, 117.82, 132.54, 153.24, 146.11, 146.61, 141.86, 181.88, 132.01, 123.56, 83.23, 126.96, 84.46, 92.18, 70.2, 71.06, 88.38, 79.57, 92.3, 99.26, 83.86, 72.84, 119.85, 45.72, 30.3];
+const tUOColors  = ["rgba(14,168,122,.82)", "rgba(14,168,122,.82)", "rgba(232,51,74,.75)", "rgba(14,168,122,.82)", "rgba(14,168,122,.82)", "rgba(14,168,122,.82)", "rgba(14,168,122,.82)", "rgba(14,168,122,.82)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)", "rgba(14,168,122,.82)", "rgba(232,51,74,.75)", "rgba(14,168,122,.82)", "rgba(14,168,122,.82)", "rgba(14,168,122,.82)", "rgba(14,168,122,.82)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)", "rgba(232,51,74,.75)"];
+const tUOBorder  = ["#0ea87a", "#0ea87a", "#e8334a", "#0ea87a", "#0ea87a", "#0ea87a", "#0ea87a", "#0ea87a", "#e8334a", "#e8334a", "#e8334a", "#e8334a", "#e8334a", "#e8334a", "#e8334a", "#0ea87a", "#e8334a", "#0ea87a", "#0ea87a", "#0ea87a", "#0ea87a", "#e8334a", "#e8334a", "#e8334a", "#e8334a", "#e8334a", "#e8334a", "#e8334a", "#e8334a", "#e8334a"];
+const tPieColors = ["#0ea87a", "#5b5ef4", "#e8620a", "#d49600", "#e8334a", "#0891b2", "#a259ff", "#f7794f", "#65a30d", "#7c3aed", "#22c55e", "#0369a1", "#be185d", "#92400e", "#06b6d4", "#84cc16", "#f59e0b", "#ec4899", "#14b8a6", "#8b5cf6", "#f97316", "#10b981", "#6366f1", "#ef4444", "#eab308", "#3b82f6", "#a3e635", "#fb7185", "#34d399", "#c084fc"];
+
+// External tooltip handler — renders outside canvas so overflow never clips it
+function externalTooltip(context) {
+  const {chart, tooltip} = context;
+  let el = document.getElementById('t-tooltip');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 't-tooltip';
+    el.style.cssText = 'position:fixed;z-index:9999;pointer-events:none;background:#fff;border:1px solid #dde3ee;border-radius:8px;padding:10px 14px;font-size:12px;color:#1a2035;box-shadow:0 4px 16px rgba(0,0,0,.12);max-width:240px';
+    document.body.appendChild(el);
+  }
+  if (tooltip.opacity === 0) { el.style.opacity = '0'; return; }
+
+  // Use caretX/caretY relative to the canvas bounding rect (viewport coords)
+  const rect = chart.canvas.getBoundingClientRect();
+  const cx = rect.left + tooltip.caretX;
+  const cy = rect.top  + tooltip.caretY;
+
+  const lines = tooltip.body ? tooltip.body.map(b => b.lines).flat() : [];
+  el.style.opacity = '0';
+  el.style.left = '-9999px';
+  el.innerHTML =
+    `<div style="font-weight:700;margin-bottom:5px;color:#1a2035">${tooltip.title?.[0]||''}</div>` +
+    lines.map(l => `<div style="color:#7a849a;margin-top:2px">${l.trim()}</div>`).join('');
+
+  // Measure after content set, then position
+  requestAnimationFrame(() => {
+    const w = el.offsetWidth, h = el.offsetHeight;
+    const off = 14;
+    let x = cx + off;
+    let y = cy - h / 2;
+    if (x + w > window.innerWidth  - 8) x = cx - w - off;
+    if (y < 8)                           y = 8;
+    if (y + h > window.innerHeight - 8)  y = window.innerHeight - h - 8;
+    el.style.left    = x + 'px';
+    el.style.top     = y + 'px';
+    el.style.opacity = '1';
+  });
+}
+
+const tBarOpts = (labelFn) => ({
+  responsive:true, maintainAspectRatio:false,
+  indexAxis:'y',
+  interaction:{mode:'nearest', intersect:true},
+  plugins:{
+    legend:{display:false},
+    tooltip:{enabled:false, external:externalTooltip, callbacks:{label:labelFn}}
+  },
+  scales:{
+    x:{grid:{color:'rgba(0,0,0,.05)'}, ticks:{callback:v=>'$'+v+' M', font:{size:10}}, afterDataLimits(s){s.max*=1.28}},
+    y:{grid:{display:false}, ticks:{font:{size:10.5}, color:'#1a2035'}}
+  }
+});
+
+// ── CHART: Ingresos por tienda ────────────────────────────────────────────────
+const chTIngBar = new Chart(document.getElementById('cTIngBar'), {
+  type:'bar',
+  data:{ labels:tNombres, datasets:[{
+    label:'Ingresos', data:tIng,
+    backgroundColor:'rgba(14,168,122,.75)', borderColor:'#0ea87a',
+    borderWidth:1, borderRadius:4, borderSkipped:false
+  }]},
+  options:{
+    ...tBarOpts(c=>{
+      const i=c.dataIndex;
+      return [` Ingresos: $${c.parsed.x.toFixed(1)} M`, ` Margen Bruto: ${tPct[i].toFixed(1)}%  ($${tUB[i].toFixed(1)} M)`];
+    }),
+    animation:{onComplete(){
+      const ctx=this.ctx; ctx.save();
+      const m=this.getDatasetMeta(0);
+      if(!m.hidden) m.data.forEach((bar,i)=>{
+        const v=tIng[i];
+        ctx.fillStyle='#0a8f68'; ctx.font='bold 9px Arial';
+        ctx.textAlign='left'; ctx.textBaseline='middle';
+        ctx.fillText('$'+v.toFixed(1)+' M', bar.x+4, bar.y);
+      });
+      ctx.restore();
+    }}
+  }
+});
+
+// ── CHART: Utilidad Operativa ─────────────────────────────────────────────────
+const chTUoBar = new Chart(document.getElementById('cTUoBar'), {
+  type:'bar',
+  data:{ labels:tNombres, datasets:[{
+    label:'Util. Operativa', data:tUO,
+    backgroundColor:tUOColors, borderColor:tUOBorder,
+    borderWidth:1, borderRadius:4, borderSkipped:false
+  }]},
+  options:{
+    ...tBarOpts(c=>` U. Operativa: $${c.parsed.x.toFixed(1)} M`),
+    scales:{
+      x:{grid:{color:'rgba(0,0,0,.05)'}, ticks:{callback:v=>'$'+v+' M', font:{size:10}},
+         afterDataLimits(s){const a=Math.max(Math.abs(s.min),Math.abs(s.max),10);s.min=-(a*1.4);s.max=a*1.4;}},
+      y:{grid:{display:false}, ticks:{font:{size:10.5}, color:'#1a2035'}}
+    },
+    animation:{onComplete(){
+      const ctx=this.ctx; ctx.save();
+      const m=this.getDatasetMeta(0);
+      m.data.forEach((bar,i)=>{
+        const v=tUO[i], pos=v>=0;
+        ctx.fillStyle=pos?'#0a8f68':'#e8334a'; ctx.font='bold 9px Arial';
+        ctx.textAlign=pos?'left':'right'; ctx.textBaseline='middle';
+        ctx.fillText((pos?'+':'')+v.toFixed(1)+' M', pos?bar.x+4:bar.x-4, bar.y);
+      });
+      ctx.restore();
+    }}
+  }
+});
+
+// ── Pie helper: show top-N, group rest as "Otras" ────────────────────────────
+function pieData(arr, topN=12) {
+  const tot=arr.reduce((a,b)=>a+b,0);
+  const sorted=[...arr.map((v,i)=>{return{v,i}})].sort((a,b)=>b.v-a.v);
+  const top=sorted.slice(0,topN);
+  const rest=sorted.slice(topN);
+  const labels=top.map(x=>tNombres[x.i]);
+  const data  =top.map(x=>+x.v.toFixed(2));
+  const colors=top.map(x=>tPieColors[x.i]);
+  if(rest.length>0){
+    labels.push('Otras ('+(rest.length)+')');
+    data.push(+rest.reduce((a,x)=>a+x.v,0).toFixed(2));
+    colors.push('#b0b8cc');
+  }
+  return{labels,data,colors,tot};
+}
+
+// Plugin: draw % labels on pie slices
+const pieLabelPlugin = {
+  id:'pieLabel',
+  afterDraw(chart) {
+    const {ctx, data} = chart;
+    const tot = data.datasets[0].data.reduce((a,b)=>a+b,0);
+    const meta = chart.getDatasetMeta(0);
+    ctx.save();
+    meta.data.forEach((arc, i) => {
+      const span = arc.endAngle - arc.startAngle;
+      if (span < 0.2) return; // skip tiny slices
+      const pct = (data.datasets[0].data[i] / tot * 100).toFixed(1);
+      const angle = arc.startAngle + span / 2;
+      const r = (arc.innerRadius + arc.outerRadius) / 2;
+      const x = arc.x + Math.cos(angle) * r;
+      const y = arc.y + Math.sin(angle) * r;
+      ctx.font = 'bold 10px Arial';
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(pct + '%', x, y);
+    });
+    ctx.restore();
+  }
+};
+
+const pieOpts = (tot, unit) => ({
+  responsive:true, maintainAspectRatio:false,
+  cutout:'40%',
+  layout:{padding:{top:16,bottom:16,left:16,right:16}},
+  plugins:{
+    legend:{position:'right', labels:{boxWidth:10,padding:8,font:{size:10},color:'#1a2035',
+      generateLabels(chart){
+        return chart.data.labels.map((lbl,i)=>({
+          text: lbl + '  ' + chart.data.datasets[0].data[i].toFixed(1) + ' M',
+          fillStyle: chart.data.datasets[0].backgroundColor[i],
+          strokeStyle: '#fff', lineWidth:1, hidden:false, index:i
+        }));
+      }
+    }},
+    tooltip:{
+      enabled:false, external:externalTooltip,
+      callbacks:{
+        label:ctx=>{
+          const pct=(ctx.parsed/tot*100).toFixed(1);
+          return ` ${ctx.label}: $${ctx.parsed.toFixed(1)} M (${pct}%)`;
+        }
+      }
+    }
+  }
+});
+
+// ── CHART: Pie Ingresos ───────────────────────────────────────────────────────
+const piIng = pieData(tIng, 12);
+const chTPieIng = new Chart(document.getElementById('cTPieIng'), {
+  type:'doughnut',
+  data:{labels:piIng.labels, datasets:[{
+    data:piIng.data, backgroundColor:piIng.colors,
+    borderWidth:2, borderColor:'#fff', hoverOffset:6
+  }]},
+  options:pieOpts(piIng.tot, 'M'),
+  plugins:[pieLabelPlugin]
+});
+
+// ── CHART: Pie Utilidad Bruta ─────────────────────────────────────────────────
+const piUB = pieData(tUB, 12);
+const chTPieUB = new Chart(document.getElementById('cTPieUB'), {
+  type:'doughnut',
+  data:{labels:piUB.labels, datasets:[{
+    data:piUB.data, backgroundColor:piUB.colors,
+    borderWidth:2, borderColor:'#fff', hoverOffset:6
+  }]},
+  options:pieOpts(piUB.tot, 'M'),
+  plugins:[pieLabelPlugin]
+});
+
+// ── TABLA TIENDAS ─────────────────────────────────────────────────────────────
+(()=>{
+  const tbody=document.getElementById('tTiendas');
+  tNombres.forEach((n,i)=>{
+    const uo=tUO[i],eb=tEbitda[i];
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td style="text-align:left;font-weight:600">${n}</td>
+      <td>$${tIng[i].toFixed(1)} M</td>
+      <td class="neg">$${(tIng[i]-tUB[i]).toFixed(1)} M</td>
+      <td class="pos">$${tUB[i].toFixed(1)} M</td>
+      <td class="${tPct[i]>=55?'pos':''}">${tPct[i].toFixed(1)}%</td>
+      <td class="neg">$${tGastos[i].toFixed(1)} M</td>
+      <td class="${uo>=0?'pos':'neg'}">${uo>=0?'+':''}$${uo.toFixed(1)} M</td>
+      <td class="${eb>=0?'pos':'neg'}">${eb>=0?'+':''}${eb.toFixed(1)}%</td>`;
+    tbody.appendChild(tr);
+  });
+  const totIng=tIng.reduce((a,b)=>a+b,0),totUB=tUB.reduce((a,b)=>a+b,0),
+        totUO=tUO.reduce((a,b)=>a+b,0),totG=tGastos.reduce((a,b)=>a+b,0);
+  const tr=document.createElement('tr'); tr.className='tot';
+  tr.innerHTML=`<td style="text-align:left">TOTAL</td>
+    <td>$${totIng.toFixed(1)} M</td>
+    <td class="neg">$${(totIng-totUB).toFixed(1)} M</td>
+    <td class="pos">$${totUB.toFixed(1)} M</td>
+    <td>${(totUB/totIng*100).toFixed(1)}%</td>
+    <td class="neg">$${totG.toFixed(1)} M</td>
+    <td class="${totUO>=0?'pos':'neg'}">${totUO>=0?'+':''}$${totUO.toFixed(1)} M</td>
+    <td class="${totUO>=0?'pos':'neg'}">${(totUO/totIng*100).toFixed(1)}%</td>`;
+  tbody.appendChild(tr);
+})();
+
+
+// ── TIENDAS: Populate dropdown ────────────────────────────────────────────────
+(()=>{
+  const sel = document.getElementById('tFiltroSel');
+  if(!sel) return;
+  tNombres.forEach(n => {
+    const opt = document.createElement('option');
+    opt.value = n; opt.textContent = n;
+    sel.appendChild(opt);
+  });
+})();
+
+// ── CHART: Líneas/barras comparativo ─────────────────────────────────────────
+let tLineMode = 'barras';
+let tLineFilter = 'TODAS';
+
+function getTiendaData(filter) {
+  if(filter === 'TODAS') {
+    return { labels: tNombres, ing: tIng, ub: tUB, uo: tUO, pct: tPct, eb: tEbitda };
+  }
+  const i = tNombres.indexOf(filter);
+  return {
+    labels: [tNombres[i]],
+    ing:    [tIng[i]],
+    ub:     [tUB[i]],
+    uo:     [tUO[i]],
+    pct:    [tPct[i]],
+    eb:     [tEbitda[i]]
+  };
+}
+
+function buildLineDatasets(d, mode) {
+  const isLine = mode === 'lineas';
+  const base = { tension:0.35, fill:false, borderWidth:2, pointRadius:4, pointHoverRadius:6 };
+  return [
+    { label:'Ingresos', data:d.ing, yAxisID:'yL',
+      borderColor:'#0ea87a', backgroundColor: isLine ? 'rgba(14,168,122,.1)' : 'rgba(14,168,122,.75)',
+      ...base, type: isLine ? 'line' : 'bar', borderRadius:4, borderSkipped:false },
+    { label:'Util. Bruta', data:d.ub, yAxisID:'yL',
+      borderColor:'#5b5ef4', backgroundColor: isLine ? 'rgba(91,94,244,.1)' : 'rgba(91,94,244,.55)',
+      ...base, type: isLine ? 'line' : 'bar', borderRadius:4, borderSkipped:false },
+    { label:'Util. Operativa', data:d.uo, yAxisID:'yL',
+      borderColor:'#e8620a', backgroundColor: isLine ? 'rgba(232,98,10,.1)' : d.uo.map(v=>v>=0?'rgba(14,168,122,.7)':'rgba(232,51,74,.65)'),
+      ...base, type: isLine ? 'line' : 'bar', borderRadius:4, borderSkipped:false },
+    { label:'EBITDA %', data:d.eb, yAxisID:'yR',
+      borderColor:'#d49600', backgroundColor:'rgba(212,150,0,.15)',
+      ...base, type:'line', borderDash: isLine ? [] : [4,3] }
+  ];
+}
+
+const chTLine = new Chart(document.getElementById('cTLine'), {
+  type: 'bar',
+  data: { labels: tNombres, datasets: buildLineDatasets(getTiendaData('TODAS'), 'barras') },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    interaction:{ mode:'index', intersect:false },
+    plugins:{
+      legend:{ position:'bottom', labels:{ usePointStyle:true, pointStyleWidth:8, color:'#7a849a', font:{size:11}, padding:14 }},
+      tooltip:{ enabled:false, external:externalTooltip,
+        callbacks:{ label: ctx => {
+          const v = ctx.parsed.y ?? ctx.parsed;
+          return ctx.dataset.yAxisID==='yR'
+            ? ` ${ctx.dataset.label}: ${v>=0?'+':''}${v.toFixed(1)}%`
+            : ` ${ctx.dataset.label}: $${v.toFixed(1)} M`;
+        }}
+      }
+    },
+    scales:{
+      x:{ grid:{display:false}, ticks:{ maxRotation:45, minRotation:30, font:{size:9}, color:'#1a2035',
+          callback(v,i){ const n=this.getLabelForValue(i); return n.length>9?n.slice(0,9)+'…':n; } } },
+      yL:{ position:'left', grid:{color:'rgba(0,0,0,.05)'}, ticks:{callback:v=>'$'+v+' M', font:{size:10}} },
+      yR:{ position:'right', grid:{drawOnChartArea:false}, ticks:{callback:v=>v+'%', color:'#d49600', font:{size:10}},
+           afterDataLimits(s){ const a=Math.max(Math.abs(s.min),Math.abs(s.max),5); s.min=-(a*1.3); s.max=a*1.3; } }
+    }
+  }
+});
+
+function setLineMode(mode, btn) {
+  tLineMode = mode;
+  document.querySelectorAll('#tab-tiendas .tbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  refreshTiendaCharts(tLineFilter);
+}
+
+// ── FILTER: Update all tienda charts + KPIs ───────────────────────────────────
+function filtrarTienda(nombre) {
+  tLineFilter = nombre;
+  refreshTiendaCharts(nombre);
+}
+
+function refreshTiendaCharts(nombre) {
+  const isTodas = nombre === 'TODAS';
+  const idxs = isTodas
+    ? tNombres.map((_,i)=>i)
+    : [tNombres.indexOf(nombre)];
+
+  const fNombres = idxs.map(i=>tNombres[i]);
+  const fIng     = idxs.map(i=>tIng[i]);
+  const fUB      = idxs.map(i=>tUB[i]);
+  const fUO      = idxs.map(i=>tUO[i]);
+  const fPct     = idxs.map(i=>tPct[i]);
+  const fEb      = idxs.map(i=>tEbitda[i]);
+  const fGastos  = idxs.map(i=>tGastos[i]);
+  const fColors  = idxs.map(i=>tUOColors[i]);
+  const fBorder  = idxs.map(i=>tUOBorder[i]);
+  const fPieC    = idxs.map(i=>tPieColors[i]);
+
+  // ── KPIs ──
+  const totIng = fIng.reduce((a,b)=>a+b,0);
+  const totUB  = fUB.reduce((a,b)=>a+b,0);
+  const totUO  = fUO.reduce((a,b)=>a+b,0);
+  const rentables = fUO.filter(v=>v>=0).length;
+
+  document.querySelector('#tab-tiendas .kgrid').innerHTML = `
+    <div class="kcard"><div class="klbl">Ingresos ${isTodas?'Totales':'Tienda'}</div>
+      <div class="kval" style="color:var(--acc)">$${totIng.toFixed(1)} M</div>
+      <div class="ksub">millones COP</div>
+      <div class="kchg neu">${isTodas?fNombres.length+' tiendas':nombre}</div></div>
+    <div class="kcard"><div class="klbl">Utilidad Bruta</div>
+      <div class="kval" style="color:var(--acc3)">$${totUB.toFixed(1)} M</div>
+      <div class="ksub">Margen ${(totUB/totIng*100).toFixed(1)}%</div>
+      <div class="kchg neu">millones COP</div></div>
+    <div class="kcard"><div class="klbl">Utilidad Operativa</div>
+      <div class="kval" style="color:${totUO>=0?'var(--acc)':'var(--acc4)'}">$${totUO.toFixed(1)} M</div>
+      <div class="ksub">sobre ingresos</div>
+      <div class="kchg ${totUO>=0?'pos':'neg'}">${totUO>=0?'▲':'▼'} Margen ${(totUO/totIng*100).toFixed(1)}%</div></div>
+    <div class="kcard"><div class="klbl">${isTodas?'Tiendas Rentables':'EBITDA %'}</div>
+      <div class="kval" style="color:var(--acc)">${isTodas?rentables:fEb[0].toFixed(1)+'%'}</div>
+      <div class="ksub">${isTodas?'de '+fNombres.length+' tiendas':'sobre ingresos'}</div>
+      <div class="kchg ${isTodas&&rentables<fNombres.length?'neg':'neu'}">${isTodas?(fNombres.length-rentables)+' con pérdida operativa':''}</div></div>`;
+
+  // ── Ingresos bar ──
+  chTIngBar.data.labels = fNombres;
+  chTIngBar.data.datasets[0].data = fIng;
+  chTIngBar.update();
+
+  // ── UO bar ──
+  chTUoBar.data.labels = fNombres;
+  chTUoBar.data.datasets[0].data = fUO;
+  chTUoBar.data.datasets[0].backgroundColor = fColors;
+  chTUoBar.data.datasets[0].borderColor = fBorder;
+  chTUoBar.update();
+
+  // ── Line/bar chart ──
+  const d = { labels:fNombres, ing:fIng, ub:fUB, uo:fUO, pct:fPct, eb:fEb };
+  chTLine.data.labels = fNombres;
+  chTLine.data.datasets = buildLineDatasets(d, tLineMode);
+  document.getElementById('tLineTit').textContent =
+    'Comparativo de Indicadores — ' + (isTodas ? 'Todas las Tiendas' : nombre);
+  chTLine.update();
+
+  // ── Pies ──
+  const piI = pieData2(fIng, fNombres, fPieC);
+  chTPieIng.data.labels = piI.labels;
+  chTPieIng.data.datasets[0].data = piI.data;
+  chTPieIng.data.datasets[0].backgroundColor = piI.colors;
+  chTPieIng.update();
+
+  const piU = pieData2(fUB, fNombres, fPieC);
+  chTPieUB.data.labels = piU.labels;
+  chTPieUB.data.datasets[0].data = piU.data;
+  chTPieUB.data.datasets[0].backgroundColor = piU.colors;
+  chTPieUB.update();
+
+  // ── Tabla ──
+  const tbody = document.getElementById('tTiendas');
+  tbody.innerHTML = '';
+  idxs.forEach(i => {
+    const uo=tUO[i], eb=tEbitda[i];
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td style="text-align:left;font-weight:600">${tNombres[i]}</td>
+      <td>$${tIng[i].toFixed(1)} M</td>
+      <td class="neg">$${(tIng[i]-tUB[i]).toFixed(1)} M</td>
+      <td class="pos">$${tUB[i].toFixed(1)} M</td>
+      <td class="${tPct[i]>=55?'pos':''}">${tPct[i].toFixed(1)}%</td>
+      <td class="neg">$${tGastos[i].toFixed(1)} M</td>
+      <td class="${uo>=0?'pos':'neg'}">${uo>=0?'+':''}$${uo.toFixed(1)} M</td>
+      <td class="${eb>=0?'pos':'neg'}">${eb>=0?'+':''}${eb.toFixed(1)}%</td>`;
+    tbody.appendChild(tr);
+  });
+  const totG=fGastos.reduce((a,b)=>a+b,0);
+  const tr=document.createElement('tr'); tr.className='tot';
+  tr.innerHTML=`<td style="text-align:left">TOTAL</td>
+    <td>$${totIng.toFixed(1)} M</td>
+    <td class="neg">$${(totIng-totUB).toFixed(1)} M</td>
+    <td class="pos">$${totUB.toFixed(1)} M</td>
+    <td>${(totUB/totIng*100).toFixed(1)}%</td>
+    <td class="neg">$${totG.toFixed(1)} M</td>
+    <td class="${totUO>=0?'pos':'neg'}">${totUO>=0?'+':''}$${totUO.toFixed(1)} M</td>
+    <td class="${totUO>=0?'pos':'neg'}">${(totUO/totIng*100).toFixed(1)}%</td>`;
+  tbody.appendChild(tr);
+}
+
+// ── Pie helper with custom labels/colors ─────────────────────────────────────
+function pieData2(arr, names, colors, topN=12) {
+  const tot = arr.reduce((a,b)=>a+b,0);
+  const sorted = arr.map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v);
+  const top  = sorted.slice(0,topN);
+  const rest = sorted.slice(topN);
+  const labels = top.map(x=>names[x.i]);
+  const data   = top.map(x=>+x.v.toFixed(2));
+  const cols   = top.map(x=>colors[x.i]||tPieColors[x.i]);
+  if(rest.length>0){
+    labels.push('Otras ('+rest.length+')');
+    data.push(+rest.reduce((a,x)=>a+x.v,0).toFixed(2));
+    cols.push('#b0b8cc');
+  }
+  return {labels, data, colors:cols, tot};
+}
+</script>
+</body>
+</html>
