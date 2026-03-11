@@ -119,8 +119,8 @@ tbody td:first-child{text-align:left;font-weight:500}
     <p class="slbl" style="margin:0">Indicadores Clave — 2025</p>
     <div class="mfil">
       <span class="mfil-lbl">Filtrar mes:</span>
-      <button class="mbtn on" onclick="filtMes(-1,this)">Todos</button>
-      <button class="mbtn" onclick="filtMes(0,this)">Ene</button><button class="mbtn" onclick="filtMes(1,this)">Feb</button><button class="mbtn" onclick="filtMes(2,this)">Mar</button><button class="mbtn" onclick="filtMes(3,this)">Abr</button><button class="mbtn" onclick="filtMes(4,this)">May</button><button class="mbtn" onclick="filtMes(5,this)">Jun</button><button class="mbtn" onclick="filtMes(6,this)">Jul</button><button class="mbtn" onclick="filtMes(7,this)">Ago</button><button class="mbtn" onclick="filtMes(8,this)">Sep</button><button class="mbtn" onclick="filtMes(9,this)">Oct</button><button class="mbtn" onclick="filtMes(10,this)">Nov</button><button class="mbtn" onclick="filtMes(11,this)">Dic</button>
+      <button class="mbtn on" id="mbtnAll" onclick="filtMesToggle(-1,this)">Todos</button>
+      <button class="mbtn" onclick="filtMesToggle(0,this)">Ene</button><button class="mbtn" onclick="filtMesToggle(1,this)">Feb</button><button class="mbtn" onclick="filtMesToggle(2,this)">Mar</button><button class="mbtn" onclick="filtMesToggle(3,this)">Abr</button><button class="mbtn" onclick="filtMesToggle(4,this)">May</button><button class="mbtn" onclick="filtMesToggle(5,this)">Jun</button><button class="mbtn" onclick="filtMesToggle(6,this)">Jul</button><button class="mbtn" onclick="filtMesToggle(7,this)">Ago</button><button class="mbtn" onclick="filtMesToggle(8,this)">Sep</button><button class="mbtn" onclick="filtMesToggle(9,this)">Oct</button><button class="mbtn" onclick="filtMesToggle(10,this)">Nov</button><button class="mbtn" onclick="filtMesToggle(11,this)">Dic</button>
     </div>
   </div>
   <div class="kgrid">
@@ -145,7 +145,7 @@ tbody td:first-child{text-align:left;font-weight:500}
       <div class="ksub" id="ks4">vs presupuesto</div>
       <div class="kchg dn" id="kchg4">▼ -$2.388,7 M brecha</div></div>
   </div>
-  <div class="crow c21">
+  <div class="crow" style="grid-template-columns:1fr">
     <div class="ccard">
       <div class="chead">
         <div><div class="ctit">Ventas Mensuales 2025</div><div class="csub">Real vs Presupuesto (millones COP)</div></div>
@@ -154,22 +154,7 @@ tbody td:first-child{text-align:left;font-weight:500}
           <span><span class="cdot" style="background:var(--acc3)"></span>Presupuesto</span>
         </div>
       </div>
-      <div style="position:relative;height:230px"><canvas id="cVentas"></canvas></div>
-    </div>
-    <div class="ccard">
-      <div class="chead"><div><div class="ctit">Cumplimiento</div><div class="csub">Real vs Meta 2025</div></div></div>
-      <div class="ring-w">
-        <svg class="ring" width="120" height="120" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="48" fill="none" stroke="var(--sur2)" stroke-width="11"/>
-          <circle id="ringArc" cx="60" cy="60" r="48" fill="none" stroke="#e8620a" stroke-width="11"
-            stroke-dasharray="301.6" stroke-dashoffset="29.9" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <div id="ringPct" class="ring-pct" style="color:#e8620a">90.1%</div>
-      <div id="ringSub" class="ring-sub">Cumplimiento acumulado anual</div>
-      <div class="srow"><span class="sname">Presupuesto</span><span id="rPpto" class="sval">$24.064,3 M</span></div>
-      <div class="srow"><span class="sname">Real</span><span id="rReal" class="sval" style="color:var(--acc)">$21.675,6 M</span></div>
-      <div class="srow"><span class="sname">Diferencia</span><span id="rDiff" class="sval" style="color:#e8334a">-$2.388,7 M</span></div>
+      <div style="position:relative;height:300px"><canvas id="cVentas"></canvas></div>
     </div>
   </div>
   <div class="crow c11">
@@ -218,10 +203,19 @@ tbody td:first-child{text-align:left;font-weight:500}
   </div>
   <div class="cfil" id="cfil">
     <span class="cfil-lbl">Filtrar:</span>
-    <button class="fb on" style="--fc:var(--acc3)" onclick="filtrarCanal('TODOS',this)">
+    <button class="fb on" id="fbAll" style="--fc:var(--acc3)" onclick="filtrarCanalToggle('TODOS',this)">
       <span style="background:var(--acc3)"></span>Todos
     </button>
-    <button class="fb" style="--fc:#f7794f" onclick="filtrarCanal('OTROS NACIONALES',this)"><span style="background:#f7794f"></span>OTROS NACIONALES</button><button class="fb" style="--fc:#d49600" onclick="filtrarCanal('PUNTO VENTA',this)"><span style="background:#d49600"></span>PUNTO VENTA</button><button class="fb" style="--fc:#7c3aed" onclick="filtrarCanal('MARROCAR',this)"><span style="background:#7c3aed"></span>MARROCAR</button><button class="fb" style="--fc:#65a30d" onclick="filtrarCanal('OTROS EXTERIOR',this)"><span style="background:#65a30d"></span>OTROS EXTERIOR</button><button class="fb" style="--fc:#0891b2" onclick="filtrarCanal('BTS',this)"><span style="background:#0891b2"></span>BTS</button><button class="fb" style="--fc:#e8334a" onclick="filtrarCanal('IMCOFI',this)"><span style="background:#e8334a"></span>IMCOFI</button><button class="fb" style="--fc:#5b5ef4" onclick="filtrarCanal('OTRAS CADENAS',this)"><span style="background:#5b5ef4"></span>OTRAS CADENAS</button><button class="fb" style="--fc:#a259ff" onclick="filtrarCanal('ECOMMERCE',this)"><span style="background:#a259ff"></span>ECOMMERCE</button><button class="fb" style="--fc:#0ea87a" onclick="filtrarCanal('ÉXITO',this)"><span style="background:#0ea87a"></span>ÉXITO</button><button class="fb" style="--fc:#e8620a" onclick="filtrarCanal('CATALOGO',this)"><span style="background:#e8620a"></span>CATALOGO</button>
+    <button class="fb" style="--fc:#f7794f" onclick="filtrarCanalToggle('OTROS NACIONALES',this)"><span style="background:#f7794f"></span>OTROS NACIONALES</button>
+    <button class="fb" style="--fc:#d49600" onclick="filtrarCanalToggle('PUNTO VENTA',this)"><span style="background:#d49600"></span>PUNTO VENTA</button>
+    <button class="fb" style="--fc:#7c3aed" onclick="filtrarCanalToggle('MARROCAR',this)"><span style="background:#7c3aed"></span>MARROCAR</button>
+    <button class="fb" style="--fc:#65a30d" onclick="filtrarCanalToggle('OTROS EXTERIOR',this)"><span style="background:#65a30d"></span>OTROS EXTERIOR</button>
+    <button class="fb" style="--fc:#0891b2" onclick="filtrarCanalToggle('BTS',this)"><span style="background:#0891b2"></span>BTS</button>
+    <button class="fb" style="--fc:#e8334a" onclick="filtrarCanalToggle('IMCOFI',this)"><span style="background:#e8334a"></span>IMCOFI</button>
+    <button class="fb" style="--fc:#5b5ef4" onclick="filtrarCanalToggle('OTRAS CADENAS',this)"><span style="background:#5b5ef4"></span>OTRAS CADENAS</button>
+    <button class="fb" style="--fc:#a259ff" onclick="filtrarCanalToggle('ECOMMERCE',this)"><span style="background:#a259ff"></span>ECOMMERCE</button>
+    <button class="fb" style="--fc:#0ea87a" onclick="filtrarCanalToggle('\u00c9XITO',this)"><span style="background:#0ea87a"></span>ÉXITO</button>
+    <button class="fb" style="--fc:#e8620a" onclick="filtrarCanalToggle('CATALOGO',this)"><span style="background:#e8620a"></span>CATALOGO</button>
   </div>
   <div class="crow c21">
     <div class="ccard">
@@ -288,60 +282,78 @@ tbody td:first-child{text-align:left;font-weight:500}
 
 <!-- TIENDAS -->
 <div id="tab-tiendas" class="tab">
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:4px">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px">
     <p class="slbl" style="margin:0">Indicadores por Tienda — Acumulado 2025</p>
     <div style="display:flex;align-items:center;gap:10px">
       <label style="font-size:12px;color:var(--mut);font-weight:600">Filtrar tienda:</label>
-      <select id="tFiltroSel" onchange="filtrarTienda(this.value)"
-        style="padding:7px 32px 7px 12px;border:1.5px solid var(--bdr);border-radius:8px;background:var(--sur);color:var(--txt);font-size:13px;font-family:inherit;cursor:pointer;appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22 viewBox=%220 0 12 8%22><path d=%22M1 1l5 5 5-5%22 stroke=%22%237a849a%22 stroke-width=%221.8%22 fill=%22none%22 stroke-linecap=%22round%22/></svg>');background-repeat:no-repeat;background-position:right 10px center;min-width:180px">
-        <option value="TODAS">Todas las tiendas</option>
-      </select>
+      <div id="tDropWrap" style="position:relative">
+        <button id="tDropBtn" onclick="toggleTiendaDrop(event)"
+          style="display:flex;align-items:center;gap:8px;padding:7px 12px;border:1.5px solid var(--bdr);border-radius:8px;background:var(--sur);color:var(--txt);font-size:13px;font-family:inherit;cursor:pointer;min-width:210px;justify-content:space-between">
+          <span id="tDropLbl">Todas las tiendas (30)</span>
+          <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="#7a849a" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <div id="tDropMenu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:200;background:var(--sur);border:1.5px solid var(--bdr);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);width:240px;overflow:hidden">
+          <div style="padding:8px;border-bottom:1px solid var(--bdr)">
+            <input id="tSearch" type="text" placeholder="Buscar tienda..." oninput="filterTiendaSearch(this.value)"
+              style="width:100%;padding:6px 10px;border:1px solid var(--bdr);border-radius:6px;background:var(--bg);color:var(--txt);font-size:12px;font-family:inherit;box-sizing:border-box"/>
+          </div>
+          <div style="padding:6px 8px;border-bottom:1px solid var(--bdr)">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:var(--txt);padding:3px 4px;border-radius:5px" onmouseover="this.style.background='var(--sur2)'" onmouseout="this.style.background=''">
+              <input type="checkbox" id="tChkAll" checked onchange="tToggleAll(this.checked)"
+                style="width:14px;height:14px;accent-color:var(--acc);cursor:pointer">
+              <span style="font-weight:700">Todas las tiendas</span>
+            </label>
+          </div>
+          <div id="tCheckList" style="max-height:260px;overflow-y:auto;padding:6px 8px"></div>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- KPIs -->
   <div class="kgrid" style="margin-bottom:16px">
     <div class="kcard"><div class="klbl">Ingresos Totales</div>
-      <div class="kval" style="color:var(--acc)">$6,180.8 M</div>
-      <div class="ksub">millones COP</div>
-      <div class="kchg neu">30 tiendas</div></div>
+      <div id="tkv0" class="kval" style="color:var(--acc)">$6,180.8 M</div>
+      <div id="tkv0s" class="ksub">30 tiendas</div>
+      <div class="kchg neu">millones COP</div></div>
     <div class="kcard"><div class="klbl">Utilidad Bruta</div>
-      <div class="kval" style="color:var(--acc3)">$3,488.5 M</div>
-      <div class="ksub">Margen 56.4%</div>
+      <div id="tkv1" class="kval" style="color:var(--acc3)">$3,488.5 M</div>
+      <div id="tkv1s" class="ksub">Margen 56.4%</div>
       <div class="kchg neu">millones COP</div></div>
     <div class="kcard"><div class="klbl">Utilidad Operativa</div>
-      <div class="kval" style="color:var(--acc4)">$-19.4 M</div>
-      <div class="ksub">sobre ingresos</div>
-      <div class="kchg neg">▼ Margen -0.3%</div></div>
+      <div id="tkv2" class="kval" style="color:var(--acc4)">$-19.4 M</div>
+      <div id="tkv2s" class="ksub">Margen -0.3%</div>
+      <div class="kchg neg">▼ sobre ingresos</div></div>
     <div class="kcard"><div class="klbl">Tiendas Rentables</div>
-      <div class="kval" style="color:var(--acc)">12</div>
-      <div class="ksub">de 30 tiendas</div>
-      <div class="kchg neg">18 con pérdida operativa</div></div>
+      <div id="tkv3" class="kval" style="color:var(--acc)">12</div>
+      <div id="tkv3s" class="ksub">de 30 tiendas</div>
+      <div id="tkv3n" class="kchg neg">18 con pérdida operativa</div></div>
   </div>
 
-  <!-- FILA 1: Ingresos scrollable + UO scrollable -->
+  <!-- FILA 1: Ranking + Semáforo -->
   <div class="crow c11" style="margin-bottom:12px">
-    <div class="ccard" style="padding:0;display:flex;flex-direction:column;overflow:visible">
-      <div class="chead" style="padding:16px 20px 10px">
-        <div><div class="ctit">Ingresos por Tienda</div>
-        <div class="csub">Millones COP · mayor a menor</div></div>
+    <div class="ccard">
+      <div class="chead">
+        <div><div class="ctit">Ranking de Tiendas</div>
+        <div class="csub">Ordenar por métrica seleccionada</div></div>
+        <select id="tRankMetric" onchange="buildRanking(this.value)"
+          style="padding:5px 10px;border:1.5px solid var(--bdr);border-radius:7px;background:var(--sur);color:var(--txt);font-size:12px;font-family:inherit;cursor:pointer">
+          <option value="ing">Ingresos</option>
+          <option value="ub">Utilidad Bruta</option>
+          <option value="pct">Margen Bruto %</option>
+          <option value="uo">Utilidad Operativa</option>
+          <option value="eb">EBITDA %</option>
+          <option value="ratio">Ratio Gastos/Ing</option>
+        </select>
       </div>
-      <div id="tIngScroll" style="overflow-y:auto;max-height:440px;overflow-x:visible;padding:0 12px 12px">
-        <div style="position:relative;height:1080px">
-          <canvas id="cTIngBar"></canvas>
-        </div>
-      </div>
+      <div id="tRankList" style="overflow-y:auto;max-height:400px"></div>
     </div>
-    <div class="ccard" style="padding:0;display:flex;flex-direction:column;overflow:visible">
-      <div class="chead" style="padding:16px 20px 10px">
-        <div><div class="ctit">Utilidad Operativa por Tienda</div>
-        <div class="csub">Verde = rentable · Rojo = pérdida (M COP)</div></div>
-      </div>
-      <div id="tUoScroll" style="overflow-y:auto;max-height:440px;overflow-x:visible;padding:0 12px 12px">
-        <div style="position:relative;height:1080px">
-          <canvas id="cTUoBar"></canvas>
-        </div>
-      </div>
+    <div class="ccard">
+      <div class="chead"><div>
+        <div class="ctit">Semáforo de Salud Operativa</div>
+        <div class="csub">🟢 Rentable ≥0% · 🟡 En riesgo -10% a 0% · 🔴 Pérdida &lt;-10%</div>
+      </div></div>
+      <div id="tSemaforo" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:4px 0;overflow-y:auto;max-height:400px"></div>
     </div>
   </div>
 
@@ -392,6 +404,16 @@ tbody td:first-child{text-align:left;font-weight:500}
       <tbody id="tTiendas"></tbody>
     </table>
   </div>
+
+  <!-- ── SCATTER al final ──────────────────────────────────────────── -->
+  <div class="ccard" style="margin-top:12px">
+    <div class="chead"><div>
+      <div class="ctit">Ingresos vs Margen Bruto</div>
+      <div class="csub">Tamaño del punto = Utilidad Operativa absoluta · Verde = rentable · Rojo = pérdida</div>
+    </div></div>
+    <div style="position:relative;height:340px"><canvas id="cTScatter"></canvas></div>
+  </div>
+
 </div>
 </main>
 <script>
@@ -432,7 +454,7 @@ function showTab(id, btn) {
   btn.classList.add('on');
   // Resize charts after tab is visible so canvas gets correct dimensions
   setTimeout(()=>{
-    [chVentas,chEbitda,chCostoPie,chLine,chLine2,chCanalBar,chCanalPie,chTIngBar,chTUoBar,chTPieIng,chTPieUB,chTLine]
+    [chVentas,chEbitda,chCostoPie,chLine,chLine2,chCanalBar,chCanalPie,chTPieIng,chTPieUB,chTLine,chTScatter]
       .forEach(ch=>{ if(ch) ch.resize(); });
   }, 80);
 }
@@ -463,17 +485,49 @@ function buildPygTable(tbodyId, arr) {
 }
 
 // ── FILTRO MES ────────────────────────────────────────────────────────────────
+// Multi-select month filter state
+let selectedMeses = new Set(); // empty = todos
+
+function filtMesToggle(idx, btn) {
+  const allBtn = document.getElementById('mbtnAll');
+  if (idx < 0) {
+    // Click "Todos" → clear all, select todos
+    selectedMeses.clear();
+    document.querySelectorAll('.mbtn').forEach(b => b.classList.remove('on'));
+    allBtn.classList.add('on');
+  } else {
+    // Toggle individual month
+    if (selectedMeses.has(idx)) {
+      selectedMeses.delete(idx);
+      btn.classList.remove('on');
+    } else {
+      selectedMeses.add(idx);
+      btn.classList.add('on');
+      allBtn.classList.remove('on');
+    }
+    // If nothing selected, revert to todos
+    if (selectedMeses.size === 0) {
+      allBtn.classList.add('on');
+    }
+  }
+  const arr = selectedMeses.size === 0 ? meses.map((_,i)=>i) : [...selectedMeses].sort((a,b)=>a-b);
+  applyFiltMes(arr);
+}
+
 function filtMes(idx, btn) {
-  document.querySelectorAll('.mbtn').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
   const arr = idx<0 ? meses.map((_,i)=>i) : [idx];
+  applyFiltMes(arr);
+}
+
+function applyFiltMes(arr) {
+  const idx = arr.length === 12 ? -1 : (arr.length === 1 ? arr[0] : null);
   const vV=arr.reduce((s,i)=>s+ventas[i],0), vC=arr.reduce((s,i)=>s+costo[i],0),
         vUB=arr.reduce((s,i)=>s+utilB[i],0), vGO=arr.reduce((s,i)=>s+gastosOp[i],0),
         vGN=arr.reduce((s,i)=>s+gtosNo[i],0), vPP=arr.reduce((s,i)=>s+ppto[i],0);
   const vUO=vUB-vGO, vUA=vUO+vGN, cp=vPP?vV/vPP*100:0, br=vV-vPP;
   // KPI
   document.getElementById('kv0').textContent=sf0(vV);
-  document.getElementById('ks0').textContent=idx<0?'millones COP':meses[idx]+' 2025';
+  document.getElementById('ks0').textContent=arr.length===12?'millones COP':arr.map(i=>meses[i]).join(', ')+' 2025';
   document.getElementById('kv1').textContent=sf0(vUB);
   document.getElementById('ks1').textContent='Margen '+(vV?vUB/vV*100:0).toFixed(1)+'%';
   const kv2=document.getElementById('kv2'); kv2.textContent=sf0(vUO); kv2.style.color=dynCol(vUO);
@@ -484,19 +538,21 @@ function filtMes(idx, btn) {
   const kc4=document.getElementById('kchg4');
   kc4.textContent=(br>=0?'▲ ':'▼ ')+sf0(br)+' brecha'; kc4.className='kchg '+(br>=0?'up':'dn');
   // Bar chart
-  const lbl=idx<0?meses:[meses[idx]];
-  chVentas.data.labels=lbl; chVentas.data.datasets[0].data=idx<0?ventas:[ventas[idx]];
-  chVentas.data.datasets[1].data=idx<0?ppto:[ppto[idx]]; chVentas.update();
+  const lbl=arr.length===12?meses:arr.map(i=>meses[i]);
+  chVentas.data.labels=lbl; chVentas.data.datasets[0].data=arr.map(i=>ventas[i]);
+  chVentas.data.datasets[1].data=arr.map(i=>ppto[i]); chVentas.update();
   // Ebitda chart
-  const uoD=idx<0?utilOp:[utilOp[idx]];
+  const uoD=arr.map(i=>utilOp[i]);
+  const newTrend=linTrend(uoD);
   chEbitda.data.labels=lbl; chEbitda.data.datasets[0].data=uoD;
   chEbitda.data.datasets[0].backgroundColor=uoD.map(v=>v>=0?'rgba(14,168,122,.8)':'rgba(232,51,74,.8)');
+  chEbitda.data.datasets[1].data=newTrend;
   chEbitda.update();
   // Line chart
   chLine.data.labels=lbl;
-  chLine.data.datasets[0].data=idx<0?ventas:[ventas[idx]];
-  chLine.data.datasets[1].data=idx<0?gastosOp:[gastosOp[idx]];
-  chLine.data.datasets[2].data=idx<0?utilB:[utilB[idx]]; chLine.update();
+  chLine.data.datasets[0].data=arr.map(i=>ventas[i]);
+  chLine.data.datasets[1].data=arr.map(i=>gastosOp[i]);
+  chLine.data.datasets[2].data=arr.map(i=>utilB[i]); chLine.update();
   // Costo pie
   costoTotal=vV; chCostoPie.data.datasets[0].data=[vC,vGO,Math.abs(vGN)]; chCostoPie.update();
   // Ring
@@ -506,7 +562,7 @@ function filtMes(idx, btn) {
   document.getElementById('ringArc').setAttribute('stroke',rc);
   document.getElementById('ringPct').textContent=cp.toFixed(1)+'%';
   document.getElementById('ringPct').style.color=rc;
-  document.getElementById('ringSub').textContent=idx<0?'Cumplimiento acumulado anual':'Cumplimiento '+meses[idx];
+  const rSub=document.getElementById('ringSub'); if(rSub) rSub.textContent=arr.length===12?'Cumplimiento acumulado anual':'Cumplimiento '+arr.map(i=>meses[i]).join(', ');
   document.getElementById('rPpto').textContent=sf0(vPP);
   document.getElementById('rReal').textContent=sf0(vV);
   const dEl=document.getElementById('rDiff'); dEl.textContent=sf0(br); dEl.style.color=dynCol(br);
@@ -523,6 +579,7 @@ function filtMes(idx, btn) {
   buildPygTable('pygTblRes', arr);
 }
 
+// ── GLOBAL: Bar labels drawn on top of tooltips ──────────────────────────────
 // ── CHART: Ventas vs Ppto ─────────────────────────────────────────────────────
 // Variaciones calculadas
 const varVsPpto   = ventas.map((v,i) => ppto[i]             ? +((v/ppto[i]-1)*100).toFixed(1)          : null);
@@ -595,23 +652,50 @@ chVentas = new Chart(document.getElementById('cVentas'), {
   }
 });
 // ── CHART: Utilidad Operativa ─────────────────────────────────────────────────
+// Tendencia lineal para utilOp
+function linTrend(arr) {
+  const n=arr.length, xi=arr.map((_,i)=>i);
+  const mx=xi.reduce((a,b)=>a+b,0)/n, my=arr.reduce((a,b)=>a+b,0)/n;
+  const num=xi.reduce((s,x,i)=>s+(x-mx)*(arr[i]-my),0);
+  const den=xi.reduce((s,x)=>s+(x-mx)**2,0);
+  const m=num/den, b=my-m*mx;
+  return xi.map(x=>+((m*x+b).toFixed(1)));
+}
+const utilOpTrend = linTrend(utilOp);
+
 const chEbitda = new Chart(document.getElementById('cEbitda'), {
   type:'bar',
   data:{ labels:meses, datasets:[
-    {label:'Util. Op.',data:utilOp,backgroundColor:utilOp.map(v=>v>=0?'rgba(14,168,122,.8)':'rgba(232,51,74,.8)'),borderRadius:5,borderSkipped:false}
+    {label:'Util. Op.',data:utilOp,backgroundColor:utilOp.map(v=>v>=0?'rgba(14,168,122,.8)':'rgba(232,51,74,.8)'),borderRadius:5,borderSkipped:false,yAxisID:'y'},
+    {label:'Tendencia',data:utilOpTrend,type:'line',borderColor:'#d49600',backgroundColor:'transparent',
+     borderWidth:2.5,borderDash:[6,3],pointRadius:0,pointHoverRadius:5,tension:0,yAxisID:'y'}
   ]},
   options:{
     responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},
-      tooltip:{backgroundColor:'#fff',titleColor:'#1a2035',bodyColor:'#7a849a',borderColor:'#dde3ee',borderWidth:1,
-        callbacks:{label:c=>` Util. Op: ${sf(c.parsed.y)}`}}},
-    scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>'$'+v+' M'}}},
+    interaction:{mode:'index',intersect:false},
+    plugins:{
+      legend:{display:true,position:'bottom',labels:{usePointStyle:true,pointStyleWidth:8,color:'#7a849a',font:{size:11},padding:14,
+        generateLabels(chart){return chart.data.datasets.map((ds,i)=>({
+          text:ds.label,fillStyle:typeof ds.backgroundColor==='string'?ds.backgroundColor:ds.backgroundColor[0]||'#ccc',
+          strokeStyle:ds.borderColor,lineWidth:ds.type==='line'?2:0,pointStyle:ds.type==='line'?'line':'rect',hidden:false,index:i
+        }));}}
+      },
+      tooltip:{enabled:false, external:externalTooltip,
+        callbacks:{label:c=>c.datasetIndex===1?` Tendencia: ${sf(c.parsed.y)}`:` Util. Op: ${sf(c.parsed.y)}`}}
+    },
+    scales:{
+      x:{grid:{display:false}},
+      y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>'$'+v+' M'}}
+    },
     animation:{onComplete(){
       const ctx=this.ctx; ctx.save();
       this.getDatasetMeta(0).data.forEach((bar,i)=>{
-        const v=utilOp[i];
-        ctx.fillStyle=v>=0?'#0a8f68':'#c0202f';ctx.font='bold 9px Arial';
-        ctx.textAlign='center';ctx.textBaseline=v>=0?'bottom':'top';
+        const v=this.data.datasets[0].data[i];
+        if(v==null) return;
+        ctx.fillStyle=v>=0?'#0a8f68':'#c0202f';
+        ctx.font='bold 9px Arial';
+        ctx.textAlign='center';
+        ctx.textBaseline=v>=0?'bottom':'top';
         ctx.fillText(sf0(v),bar.x,v>=0?bar.y-2:bar.y+2);
       });
       ctx.restore();
@@ -769,25 +853,85 @@ function drawCanalPieLabels(chart) {
   ctx.restore();
 }
 // ── FILTRO CANAL ──────────────────────────────────────────────────────────────
+// ── Canal multi-select state ──────────────────────────────────────────────────
+const selectedCanales = new Set();
+
+function filtrarCanalToggle(nombre, btn) {
+  const allBtn = document.getElementById('fbAll');
+  if (nombre === 'TODOS') {
+    selectedCanales.clear();
+    document.querySelectorAll('.fb').forEach(b => {
+      b.classList.remove('on');
+      b.style.removeProperty('background');
+      b.style.removeProperty('border-color');
+    });
+    allBtn.classList.add('on');
+  } else {
+    if (selectedCanales.has(nombre)) {
+      selectedCanales.delete(nombre);
+      btn.classList.remove('on');
+      btn.style.removeProperty('background');
+      btn.style.removeProperty('border-color');
+    } else {
+      selectedCanales.add(nombre);
+      btn.classList.add('on');
+      const canal = canales.find(x => x.name === nombre);
+      if (canal) { btn.style.background = canal.color; btn.style.borderColor = canal.color; }
+      allBtn.classList.remove('on');
+    }
+    if (selectedCanales.size === 0) allBtn.classList.add('on');
+  }
+  applyFiltroCanal();
+}
+
 function filtrarCanal(nombre, btn) {
-  document.querySelectorAll('.fb').forEach(b=>{b.classList.remove('on');b.style.removeProperty('background');b.style.removeProperty('border-color');});
-  btn.classList.add('on');
-  const c=canales.find(x=>x.name===nombre);
-  if(c){btn.style.background=c.color;btn.style.borderColor=c.color;}
-  updateCanalKPIs(nombre);
-  const filt=nombre==='TODOS'?canales:[canales.find(x=>x.name===nombre)].filter(Boolean);
-  chCanalBar.data.labels=filt.map(c=>c.name);
-  chCanalBar.data.datasets[0].data=filt.map(c=>c.ventas);
-  chCanalBar.data.datasets[0].backgroundColor=filt.map(c=>c.color+'cc');
-  chCanalBar.data.datasets[1].data=filt.map(c=>c.ub);
-  chCanalBar.data.datasets[1].backgroundColor=filt.map(c=>c.color+'44');
+  // kept for backwards compat
+  filtrarCanalToggle(nombre, btn);
+}
+
+function applyFiltroCanal() {
+  const isTodos = selectedCanales.size === 0;
+  const filt = isTodos ? canales : canales.filter(c => selectedCanales.has(c.name));
+  const nombres = new Set(filt.map(c => c.name));
+
+  // KPIs
+  const totV = filt.reduce((s,c)=>s+c.ventas,0);
+  const totUB = filt.reduce((s,c)=>s+c.ub,0);
+  const totGOP = filt.reduce((s,c)=>s+c.gop,0);
+  const totRes = totUB - totGOP;
+  document.getElementById('ck0').textContent = sf(totV);
+  document.getElementById('ck0s').textContent = isTodos ? 'Total canales' : filt.length + ' canal(es)';
+  document.getElementById('ck1').textContent = sf(totUB);
+  document.getElementById('ck1s').textContent = 'Margen ' + (totV ? (totUB/totV*100).toFixed(1) : '0') + '%';
+  document.getElementById('ck2').textContent = sf(totGOP);
+  document.getElementById('ck2s').textContent = (totV ? (totGOP/totV*100).toFixed(1) : '0') + '% ventas';
+  const ck3 = document.getElementById('ck3');
+  ck3.textContent = sf(totRes); ck3.style.color = totRes >= 0 ? 'var(--acc)' : 'var(--acc4)';
+  document.getElementById('ck3s').textContent = 'Margen ' + (totV ? (totRes/totV*100).toFixed(1) : '0') + '%';
+
+  // Bar chart
+  chCanalBar.data.labels = filt.map(c => c.name);
+  chCanalBar.data.datasets[0].data = filt.map(c => c.ventas);
+  chCanalBar.data.datasets[0].backgroundColor = filt.map(c => c.color+'cc');
+  chCanalBar.data.datasets[1].data = filt.map(c => c.ub);
+  chCanalBar.data.datasets[1].backgroundColor = filt.map(c => c.color+'44');
   chCanalBar.update();
-  chCanalPie.data.datasets[0].backgroundColor=canales.map(c=>nombre==='TODOS'?c.color:c.name===nombre?c.color:c.color+'33');
-  chCanalPie.data.datasets[0].borderWidth=canales.map(c=>nombre==='TODOS'?2:c.name===nombre?3:1);
+
+  // Pie — highlight selected, dim others
+  chCanalPie.data.datasets[0].backgroundColor = canales.map(c =>
+    isTodos || nombres.has(c.name) ? c.color : c.color+'33');
+  chCanalPie.data.datasets[0].borderWidth = canales.map(c =>
+    isTodos ? 2 : nombres.has(c.name) ? 3 : 1);
   chCanalPie.update();
-  document.getElementById('cBarTit').textContent=nombre==='TODOS'?'Ventas por Canal':'Canal: '+nombre;
-  document.querySelectorAll('#canalTblBody tr').forEach(tr=>{
-    tr.style.opacity=(nombre==='TODOS'||tr.dataset.canal===nombre)?'1':'0.3';
+
+  // Title
+  document.getElementById('cBarTit').textContent = isTodos
+    ? 'Ventas por Canal'
+    : filt.length === 1 ? 'Canal: ' + filt[0].name : filt.length + ' Canales seleccionados';
+
+  // Table rows
+  document.querySelectorAll('#canalTblBody tr').forEach(tr => {
+    tr.style.opacity = (isTodos || nombres.has(tr.dataset.canal)) ? '1' : '0.3';
   });
 }
 
@@ -871,7 +1015,7 @@ const chCanalPie = new Chart(document.getElementById('cCanalPie'), {
 });
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-updateCanalKPIs('TODOS');
+applyFiltroCanal();
 buildPygTable('pygTblRes',  meses.map((_,i)=>i));
 buildPygTable('pygTblFull', meses.map((_,i)=>i));
 
@@ -942,396 +1086,300 @@ const tBarOpts = (labelFn) => ({
   }
 });
 
-// ── CHART: Ingresos por tienda ────────────────────────────────────────────────
-const chTIngBar = new Chart(document.getElementById('cTIngBar'), {
-  type:'bar',
-  data:{ labels:tNombres, datasets:[{
-    label:'Ingresos', data:tIng,
-    backgroundColor:'rgba(14,168,122,.75)', borderColor:'#0ea87a',
-    borderWidth:1, borderRadius:4, borderSkipped:false
-  }]},
-  options:{
-    ...tBarOpts(c=>{
-      const i=c.dataIndex;
-      return [` Ingresos: $${c.parsed.x.toFixed(1)} M`, ` Margen Bruto: ${tPct[i].toFixed(1)}%  ($${tUB[i].toFixed(1)} M)`];
-    }),
-    animation:{onComplete(){
-      const ctx=this.ctx; ctx.save();
-      const m=this.getDatasetMeta(0);
-      if(!m.hidden) m.data.forEach((bar,i)=>{
-        const v=tIng[i];
-        ctx.fillStyle='#0a8f68'; ctx.font='bold 9px Arial';
-        ctx.textAlign='left'; ctx.textBaseline='middle';
-        ctx.fillText('$'+v.toFixed(1)+' M', bar.x+4, bar.y);
-      });
-      ctx.restore();
-    }}
-  }
-});
-
-// ── CHART: Utilidad Operativa ─────────────────────────────────────────────────
-const chTUoBar = new Chart(document.getElementById('cTUoBar'), {
-  type:'bar',
-  data:{ labels:tNombres, datasets:[{
-    label:'Util. Operativa', data:tUO,
-    backgroundColor:tUOColors, borderColor:tUOBorder,
-    borderWidth:1, borderRadius:4, borderSkipped:false
-  }]},
-  options:{
-    ...tBarOpts(c=>` U. Operativa: $${c.parsed.x.toFixed(1)} M`),
-    scales:{
-      x:{grid:{color:'rgba(0,0,0,.05)'}, ticks:{callback:v=>'$'+v+' M', font:{size:10}},
-         afterDataLimits(s){const a=Math.max(Math.abs(s.min),Math.abs(s.max),10);s.min=-(a*1.4);s.max=a*1.4;}},
-      y:{grid:{display:false}, ticks:{font:{size:10.5}, color:'#1a2035'}}
-    },
-    animation:{onComplete(){
-      const ctx=this.ctx; ctx.save();
-      const m=this.getDatasetMeta(0);
-      m.data.forEach((bar,i)=>{
-        const v=tUO[i], pos=v>=0;
-        ctx.fillStyle=pos?'#0a8f68':'#e8334a'; ctx.font='bold 9px Arial';
-        ctx.textAlign=pos?'left':'right'; ctx.textBaseline='middle';
-        ctx.fillText((pos?'+':'')+v.toFixed(1)+' M', pos?bar.x+4:bar.x-4, bar.y);
-      });
-      ctx.restore();
-    }}
-  }
-});
-
-// ── Pie helper: show top-N, group rest as "Otras" ────────────────────────────
-function pieData(arr, topN=12) {
+// ── Pie helper ────────────────────────────────────────────────────────────────
+function pieData2(arr, names, colors, topN=12) {
   const tot=arr.reduce((a,b)=>a+b,0);
-  const sorted=[...arr.map((v,i)=>{return{v,i}})].sort((a,b)=>b.v-a.v);
-  const top=sorted.slice(0,topN);
-  const rest=sorted.slice(topN);
-  const labels=top.map(x=>tNombres[x.i]);
-  const data  =top.map(x=>+x.v.toFixed(2));
-  const colors=top.map(x=>tPieColors[x.i]);
-  if(rest.length>0){
-    labels.push('Otras ('+(rest.length)+')');
-    data.push(+rest.reduce((a,x)=>a+x.v,0).toFixed(2));
-    colors.push('#b0b8cc');
-  }
-  return{labels,data,colors,tot};
+  const sorted=arr.map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v);
+  const top=sorted.slice(0,topN), rest=sorted.slice(topN);
+  const labels=top.map(x=>names[x.i]), data=top.map(x=>+x.v.toFixed(2)), cols=top.map(x=>colors[x.i%colors.length]);
+  if(rest.length>0){labels.push('Otras ('+rest.length+')');data.push(+rest.reduce((a,x)=>a+x.v,0).toFixed(2));cols.push('#b0b8cc');}
+  return {labels, data, colors:cols, tot};
 }
 
-// Plugin: draw % labels on pie slices
-const pieLabelPlugin = {
-  id:'pieLabel',
-  afterDraw(chart) {
-    const {ctx, data} = chart;
-    const tot = data.datasets[0].data.reduce((a,b)=>a+b,0);
-    const meta = chart.getDatasetMeta(0);
-    ctx.save();
-    meta.data.forEach((arc, i) => {
-      const span = arc.endAngle - arc.startAngle;
-      if (span < 0.2) return; // skip tiny slices
-      const pct = (data.datasets[0].data[i] / tot * 100).toFixed(1);
-      const angle = arc.startAngle + span / 2;
-      const r = (arc.innerRadius + arc.outerRadius) / 2;
-      const x = arc.x + Math.cos(angle) * r;
-      const y = arc.y + Math.sin(angle) * r;
-      ctx.font = 'bold 10px Arial';
-      ctx.fillStyle = '#fff';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(pct + '%', x, y);
-    });
-    ctx.restore();
-  }
-};
-
-const pieOpts = (tot, unit) => ({
-  responsive:true, maintainAspectRatio:false,
-  cutout:'40%',
-  layout:{padding:{top:16,bottom:16,left:16,right:16}},
-  plugins:{
-    legend:{position:'right', labels:{boxWidth:10,padding:8,font:{size:10},color:'#1a2035',
-      generateLabels(chart){
-        return chart.data.labels.map((lbl,i)=>({
-          text: lbl + '  ' + chart.data.datasets[0].data[i].toFixed(1) + ' M',
-          fillStyle: chart.data.datasets[0].backgroundColor[i],
-          strokeStyle: '#fff', lineWidth:1, hidden:false, index:i
-        }));
-      }
-    }},
-    tooltip:{
-      enabled:false, external:externalTooltip,
-      callbacks:{
-        label:ctx=>{
-          const pct=(ctx.parsed/tot*100).toFixed(1);
-          return ` ${ctx.label}: $${ctx.parsed.toFixed(1)} M (${pct}%)`;
-        }
-      }
-    }
-  }
-});
-
-// ── CHART: Pie Ingresos ───────────────────────────────────────────────────────
-const piIng = pieData(tIng, 12);
-const chTPieIng = new Chart(document.getElementById('cTPieIng'), {
-  type:'doughnut',
-  data:{labels:piIng.labels, datasets:[{
-    data:piIng.data, backgroundColor:piIng.colors,
-    borderWidth:2, borderColor:'#fff', hoverOffset:6
-  }]},
-  options:pieOpts(piIng.tot, 'M'),
-  plugins:[pieLabelPlugin]
-});
-
-// ── CHART: Pie Utilidad Bruta ─────────────────────────────────────────────────
-const piUB = pieData(tUB, 12);
-const chTPieUB = new Chart(document.getElementById('cTPieUB'), {
-  type:'doughnut',
-  data:{labels:piUB.labels, datasets:[{
-    data:piUB.data, backgroundColor:piUB.colors,
-    borderWidth:2, borderColor:'#fff', hoverOffset:6
-  }]},
-  options:pieOpts(piUB.tot, 'M'),
-  plugins:[pieLabelPlugin]
-});
-
-// ── TABLA TIENDAS ─────────────────────────────────────────────────────────────
-(()=>{
-  const tbody=document.getElementById('tTiendas');
-  tNombres.forEach((n,i)=>{
-    const uo=tUO[i],eb=tEbitda[i];
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td style="text-align:left;font-weight:600">${n}</td>
-      <td>$${tIng[i].toFixed(1)} M</td>
-      <td class="neg">$${(tIng[i]-tUB[i]).toFixed(1)} M</td>
-      <td class="pos">$${tUB[i].toFixed(1)} M</td>
-      <td class="${tPct[i]>=55?'pos':''}">${tPct[i].toFixed(1)}%</td>
-      <td class="neg">$${tGastos[i].toFixed(1)} M</td>
-      <td class="${uo>=0?'pos':'neg'}">${uo>=0?'+':''}$${uo.toFixed(1)} M</td>
-      <td class="${eb>=0?'pos':'neg'}">${eb>=0?'+':''}${eb.toFixed(1)}%</td>`;
-    tbody.appendChild(tr);
-  });
-  const totIng=tIng.reduce((a,b)=>a+b,0),totUB=tUB.reduce((a,b)=>a+b,0),
-        totUO=tUO.reduce((a,b)=>a+b,0),totG=tGastos.reduce((a,b)=>a+b,0);
-  const tr=document.createElement('tr'); tr.className='tot';
-  tr.innerHTML=`<td style="text-align:left">TOTAL</td>
-    <td>$${totIng.toFixed(1)} M</td>
-    <td class="neg">$${(totIng-totUB).toFixed(1)} M</td>
-    <td class="pos">$${totUB.toFixed(1)} M</td>
-    <td>${(totUB/totIng*100).toFixed(1)}%</td>
-    <td class="neg">$${totG.toFixed(1)} M</td>
-    <td class="${totUO>=0?'pos':'neg'}">${totUO>=0?'+':''}$${totUO.toFixed(1)} M</td>
-    <td class="${totUO>=0?'pos':'neg'}">${(totUO/totIng*100).toFixed(1)}%</td>`;
-  tbody.appendChild(tr);
-})();
-
-
-// ── TIENDAS: Populate dropdown ────────────────────────────────────────────────
-(()=>{
-  const sel = document.getElementById('tFiltroSel');
-  if(!sel) return;
-  tNombres.forEach(n => {
-    const opt = document.createElement('option');
-    opt.value = n; opt.textContent = n;
-    sel.appendChild(opt);
-  });
-})();
-
-// ── CHART: Líneas/barras comparativo ─────────────────────────────────────────
+// ── CHART: Comparativo líneas/barras ──────────────────────────────────────────
 let tLineMode = 'barras';
 let tLineFilter = 'TODAS';
 
-function getTiendaData(filter) {
-  if(filter === 'TODAS') {
-    return { labels: tNombres, ing: tIng, ub: tUB, uo: tUO, pct: tPct, eb: tEbitda };
-  }
-  const i = tNombres.indexOf(filter);
-  return {
-    labels: [tNombres[i]],
-    ing:    [tIng[i]],
-    ub:     [tUB[i]],
-    uo:     [tUO[i]],
-    pct:    [tPct[i]],
-    eb:     [tEbitda[i]]
-  };
-}
-
-function buildLineDatasets(d, mode) {
-  const isLine = mode === 'lineas';
-  const base = { tension:0.35, fill:false, borderWidth:2, pointRadius:4, pointHoverRadius:6 };
-  return [
-    { label:'Ingresos', data:d.ing, yAxisID:'yL',
-      borderColor:'#0ea87a', backgroundColor: isLine ? 'rgba(14,168,122,.1)' : 'rgba(14,168,122,.75)',
-      ...base, type: isLine ? 'line' : 'bar', borderRadius:4, borderSkipped:false },
-    { label:'Util. Bruta', data:d.ub, yAxisID:'yL',
-      borderColor:'#5b5ef4', backgroundColor: isLine ? 'rgba(91,94,244,.1)' : 'rgba(91,94,244,.55)',
-      ...base, type: isLine ? 'line' : 'bar', borderRadius:4, borderSkipped:false },
-    { label:'Util. Operativa', data:d.uo, yAxisID:'yL',
-      borderColor:'#e8620a', backgroundColor: isLine ? 'rgba(232,98,10,.1)' : d.uo.map(v=>v>=0?'rgba(14,168,122,.7)':'rgba(232,51,74,.65)'),
-      ...base, type: isLine ? 'line' : 'bar', borderRadius:4, borderSkipped:false },
-    { label:'EBITDA %', data:d.eb, yAxisID:'yR',
-      borderColor:'#d49600', backgroundColor:'rgba(212,150,0,.15)',
-      ...base, type:'line', borderDash: isLine ? [] : [4,3] }
-  ];
-}
-
 const chTLine = new Chart(document.getElementById('cTLine'), {
-  type: 'bar',
-  data: { labels: tNombres, datasets: buildLineDatasets(getTiendaData('TODAS'), 'barras') },
-  options: {
+  type:'bar',
+  data:{
+    labels: tNombres,
+    datasets:[
+      {label:'Ingresos',    data:tIng,    backgroundColor:'rgba(14,168,122,.75)', borderColor:'#0ea87a', borderWidth:1.5, borderRadius:3, yAxisID:'y'},
+      {label:'Util. Bruta', data:tUB,     backgroundColor:'rgba(10,120,150,.65)', borderColor:'#0a7896', borderWidth:1.5, borderRadius:3, yAxisID:'y'},
+      {label:'Util. Op.',   data:tUO,     backgroundColor:tUOColors,              borderColor:tUOBorder, borderWidth:1.5, borderRadius:3, yAxisID:'y'},
+      {label:'EBITDA %',    data:tEbitda, backgroundColor:'rgba(212,150,0,.5)',   borderColor:'#d49600', borderWidth:2, type:'line', tension:.3, pointRadius:3, yAxisID:'y2'}
+    ]
+  },
+  options:{
     responsive:true, maintainAspectRatio:false,
-    interaction:{ mode:'index', intersect:false },
+    interaction:{mode:'index', intersect:false},
     plugins:{
-      legend:{ position:'bottom', labels:{ usePointStyle:true, pointStyleWidth:8, color:'#7a849a', font:{size:11}, padding:14 }},
-      tooltip:{ enabled:false, external:externalTooltip,
-        callbacks:{ label: ctx => {
-          const v = ctx.parsed.y ?? ctx.parsed;
-          return ctx.dataset.yAxisID==='yR'
-            ? ` ${ctx.dataset.label}: ${v>=0?'+':''}${v.toFixed(1)}%`
-            : ` ${ctx.dataset.label}: $${v.toFixed(1)} M`;
-        }}
-      }
+      legend:{position:'bottom', labels:{usePointStyle:true, pointStyleWidth:8, color:'#7a849a', font:{size:11}, padding:14}},
+      tooltip:{enabled:false, external:externalTooltip, callbacks:{label:ctx=>{
+        if(ctx.datasetIndex===3) return ` EBITDA: ${ctx.parsed.y.toFixed(1)}%`;
+        return ` ${ctx.dataset.label}: $${ctx.parsed.y.toFixed(1)} M`;
+      }}}
     },
     scales:{
-      x:{ grid:{display:false}, ticks:{ maxRotation:45, minRotation:30, font:{size:9}, color:'#1a2035',
-          callback(v,i){ const n=this.getLabelForValue(i); return n.length>9?n.slice(0,9)+'…':n; } } },
-      yL:{ position:'left', grid:{color:'rgba(0,0,0,.05)'}, ticks:{callback:v=>'$'+v+' M', font:{size:10}} },
-      yR:{ position:'right', grid:{drawOnChartArea:false}, ticks:{callback:v=>v+'%', color:'#d49600', font:{size:10}},
-           afterDataLimits(s){ const a=Math.max(Math.abs(s.min),Math.abs(s.max),5); s.min=-(a*1.3); s.max=a*1.3; } }
+      x:{grid:{display:false}, ticks:{maxRotation:45, minRotation:30, font:{size:9}, callback(v,i){const n=this.getLabelForValue(i); return n.length>8?n.slice(0,8)+'…':n;}}},
+      y:{grid:{color:'rgba(0,0,0,.05)'}, ticks:{callback:v=>'$'+v+' M'}},
+      y2:{position:'right', grid:{display:false}, ticks:{callback:v=>v+'%'}}
     }
   }
 });
 
 function setLineMode(mode, btn) {
   tLineMode = mode;
-  document.querySelectorAll('#tab-tiendas .tbtn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
-  refreshTiendaCharts(tLineFilter);
-}
-
-// ── FILTER: Update all tienda charts + KPIs ───────────────────────────────────
-function filtrarTienda(nombre) {
-  tLineFilter = nombre;
-  refreshTiendaCharts(nombre);
-}
-
-function refreshTiendaCharts(nombre) {
-  const isTodas = nombre === 'TODAS';
-  const idxs = isTodas
-    ? tNombres.map((_,i)=>i)
-    : [tNombres.indexOf(nombre)];
-
-  const fNombres = idxs.map(i=>tNombres[i]);
-  const fIng     = idxs.map(i=>tIng[i]);
-  const fUB      = idxs.map(i=>tUB[i]);
-  const fUO      = idxs.map(i=>tUO[i]);
-  const fPct     = idxs.map(i=>tPct[i]);
-  const fEb      = idxs.map(i=>tEbitda[i]);
-  const fGastos  = idxs.map(i=>tGastos[i]);
-  const fColors  = idxs.map(i=>tUOColors[i]);
-  const fBorder  = idxs.map(i=>tUOBorder[i]);
-  const fPieC    = idxs.map(i=>tPieColors[i]);
-
-  // ── KPIs ──
-  const totIng = fIng.reduce((a,b)=>a+b,0);
-  const totUB  = fUB.reduce((a,b)=>a+b,0);
-  const totUO  = fUO.reduce((a,b)=>a+b,0);
-  const rentables = fUO.filter(v=>v>=0).length;
-
-  document.querySelector('#tab-tiendas .kgrid').innerHTML = `
-    <div class="kcard"><div class="klbl">Ingresos ${isTodas?'Totales':'Tienda'}</div>
-      <div class="kval" style="color:var(--acc)">$${totIng.toFixed(1)} M</div>
-      <div class="ksub">millones COP</div>
-      <div class="kchg neu">${isTodas?fNombres.length+' tiendas':nombre}</div></div>
-    <div class="kcard"><div class="klbl">Utilidad Bruta</div>
-      <div class="kval" style="color:var(--acc3)">$${totUB.toFixed(1)} M</div>
-      <div class="ksub">Margen ${(totUB/totIng*100).toFixed(1)}%</div>
-      <div class="kchg neu">millones COP</div></div>
-    <div class="kcard"><div class="klbl">Utilidad Operativa</div>
-      <div class="kval" style="color:${totUO>=0?'var(--acc)':'var(--acc4)'}">$${totUO.toFixed(1)} M</div>
-      <div class="ksub">sobre ingresos</div>
-      <div class="kchg ${totUO>=0?'pos':'neg'}">${totUO>=0?'▲':'▼'} Margen ${(totUO/totIng*100).toFixed(1)}%</div></div>
-    <div class="kcard"><div class="klbl">${isTodas?'Tiendas Rentables':'EBITDA %'}</div>
-      <div class="kval" style="color:var(--acc)">${isTodas?rentables:fEb[0].toFixed(1)+'%'}</div>
-      <div class="ksub">${isTodas?'de '+fNombres.length+' tiendas':'sobre ingresos'}</div>
-      <div class="kchg ${isTodas&&rentables<fNombres.length?'neg':'neu'}">${isTodas?(fNombres.length-rentables)+' con pérdida operativa':''}</div></div>`;
-
-  // ── Ingresos bar ──
-  chTIngBar.data.labels = fNombres;
-  chTIngBar.data.datasets[0].data = fIng;
-  chTIngBar.update();
-
-  // ── UO bar ──
-  chTUoBar.data.labels = fNombres;
-  chTUoBar.data.datasets[0].data = fUO;
-  chTUoBar.data.datasets[0].backgroundColor = fColors;
-  chTUoBar.data.datasets[0].borderColor = fBorder;
-  chTUoBar.update();
-
-  // ── Line/bar chart ──
-  const d = { labels:fNombres, ing:fIng, ub:fUB, uo:fUO, pct:fPct, eb:fEb };
-  chTLine.data.labels = fNombres;
-  chTLine.data.datasets = buildLineDatasets(d, tLineMode);
-  document.getElementById('tLineTit').textContent =
-    'Comparativo de Indicadores — ' + (isTodas ? 'Todas las Tiendas' : nombre);
+  const type = mode==='lineas' ? 'line' : 'bar';
+  chTLine.data.datasets.forEach((ds,i)=>{ if(i<3) ds.type=type; });
   chTLine.update();
+}
 
-  // ── Pies ──
-  const piI = pieData2(fIng, fNombres, fPieC);
-  chTPieIng.data.labels = piI.labels;
-  chTPieIng.data.datasets[0].data = piI.data;
-  chTPieIng.data.datasets[0].backgroundColor = piI.colors;
-  chTPieIng.update();
+// ── CHART: Pie Ingresos ───────────────────────────────────────────────────────
+const _pd1 = pieData2(tIng, tNombres, tPieColors);
+const chTPieIng = new Chart(document.getElementById('cTPieIng'), {
+  type:'doughnut',
+  data:{ labels:_pd1.labels, datasets:[{ data:_pd1.data, backgroundColor:_pd1.colors, borderWidth:2, hoverOffset:8 }] },
+  options:{ responsive:true, maintainAspectRatio:false, cutout:'62%',
+    plugins:{ legend:{position:'right', labels:{usePointStyle:true,pointStyleWidth:7,color:'#7a849a',font:{size:10},boxWidth:8,padding:6}},
+      tooltip:{enabled:false, external:externalTooltip, callbacks:{label:c=>` ${c.label}: $${c.parsed.toFixed(1)} M (${(c.parsed/_pd1.tot*100).toFixed(1)}%)`}}
+    }
+  }
+});
 
-  const piU = pieData2(fUB, fNombres, fPieC);
-  chTPieUB.data.labels = piU.labels;
-  chTPieUB.data.datasets[0].data = piU.data;
-  chTPieUB.data.datasets[0].backgroundColor = piU.colors;
-  chTPieUB.update();
+// ── CHART: Pie Utilidad Bruta ─────────────────────────────────────────────────
+const _pd2 = pieData2(tUB, tNombres, tPieColors);
+const chTPieUB = new Chart(document.getElementById('cTPieUB'), {
+  type:'doughnut',
+  data:{ labels:_pd2.labels, datasets:[{ data:_pd2.data, backgroundColor:_pd2.colors, borderWidth:2, hoverOffset:8 }] },
+  options:{ responsive:true, maintainAspectRatio:false, cutout:'62%',
+    plugins:{ legend:{position:'right', labels:{usePointStyle:true,pointStyleWidth:7,color:'#7a849a',font:{size:10},boxWidth:8,padding:6}},
+      tooltip:{enabled:false, external:externalTooltip, callbacks:{label:c=>` ${c.label}: $${c.parsed.toFixed(1)} M (${(c.parsed/_pd2.tot*100).toFixed(1)}%)`}}
+    }
+  }
+});
 
-  // ── Tabla ──
-  const tbody = document.getElementById('tTiendas');
-  tbody.innerHTML = '';
+// ── CHART: Scatter ────────────────────────────────────────────────────────────
+const scatterData = tNombres.map((n,i)=>({
+  x:tIng[i], y:tPct[i],
+  r:Math.max(5,Math.min(22,Math.abs(tUO[i])/8+5)),
+  name:n, uo:tUO[i],
+  color:tUO[i]>=0?'rgba(14,168,122,.75)':'rgba(232,51,74,.70)',
+  border:tUO[i]>=0?'#0ea87a':'#e8334a'
+}));
+const chTScatter = new Chart(document.getElementById('cTScatter'), {
+  type:'bubble',
+  data:{datasets:[{data:scatterData, backgroundColor:scatterData.map(d=>d.color), borderColor:scatterData.map(d=>d.border), borderWidth:1.5}]},
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{enabled:false, external:externalTooltip, callbacks:{label:ctx=>{
+        const d=ctx.raw;
+        return [`  ${d.name}`,`  Ingresos: $${d.x.toFixed(1)} M`,`  Margen Bruto: ${d.y.toFixed(1)}%`,`  U. Operativa: ${d.uo>=0?'+':''}$${d.uo.toFixed(1)} M`];
+      }}}
+    },
+    scales:{
+      x:{title:{display:true,text:'Ingresos (M COP)',color:'#7a849a',font:{size:11}},grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>'$'+v+' M'}},
+      y:{title:{display:true,text:'Margen Bruto %',color:'#7a849a',font:{size:11}},grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>v+'%'}}
+    }
+  }
+});
+
+// ── Ranking ───────────────────────────────────────────────────────────────────
+function getCurrentTiendaIdxs() {
+  const checked = [...document.querySelectorAll('#tCheckList input[type=checkbox]')].filter(c=>c.checked).map(c=>c.dataset.nombre);
+  if (checked.length===0 || checked.length===tNombres.length) return tNombres.map((_,i)=>i);
+  return checked.map(n=>tNombres.indexOf(n)).filter(i=>i>=0);
+}
+
+function buildRanking(metric) {
+  const idxs = getCurrentTiendaIdxs();
+  const ratioArr = idxs.map(i=>+(tGastos[i]/tIng[i]*100).toFixed(1));
+  const metricMap = {
+    ing:   { getV:(i,j)=>tIng[i],    fmt:v=>'$'+v.toFixed(1)+' M',              up:true  },
+    ub:    { getV:(i,j)=>tUB[i],     fmt:v=>'$'+v.toFixed(1)+' M',              up:true  },
+    pct:   { getV:(i,j)=>tPct[i],    fmt:v=>v.toFixed(1)+'%',                   up:true  },
+    uo:    { getV:(i,j)=>tUO[i],     fmt:v=>(v>=0?'+':'')+v.toFixed(1)+' M',    up:true  },
+    eb:    { getV:(i,j)=>tEbitda[i], fmt:v=>(v>=0?'+':'')+v.toFixed(1)+'%',     up:true  },
+    ratio: { getV:(i,j)=>ratioArr[j], fmt:v=>v.toFixed(1)+'%',                  up:false }
+  };
+  const m = metricMap[metric];
+  const sorted = idxs.map((idx,j)=>({idx,j})).sort((a,b)=>m.up?m.getV(b.idx,b.j)-m.getV(a.idx,a.j):m.getV(a.idx,a.j)-m.getV(b.idx,b.j));
+  const avgRatio = ratioArr.reduce((a,b)=>a+b,0)/ratioArr.length;
+  const maxVal = Math.max(...sorted.map(({idx,j})=>Math.abs(m.getV(idx,j))));
+  const container = document.getElementById('tRankList'); container.innerHTML='';
+  sorted.forEach(({idx,j},rank) => {
+    const v=m.getV(idx,j), color=tPieColors[idx%tPieColors.length];
+    const isGood = metric==='ratio'?v<=avgRatio:v>=0;
+    const barW = maxVal>0?Math.abs(v)/maxVal*100:0;
+    const div=document.createElement('div');
+    div.style.cssText='display:flex;align-items:center;gap:8px;padding:5px 10px;border-bottom:1px solid var(--bdr)';
+    div.innerHTML=`<span style="font-size:10px;color:var(--mut);font-weight:700;min-width:18px">#${rank+1}</span>
+      <span style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0"></span>
+      <span style="font-size:12px;color:var(--txt);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${tNombres[idx]}</span>
+      <div style="flex:1;height:6px;background:var(--sur2);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${barW}%;background:${isGood?'#0ea87a':'#e8334a'};border-radius:3px"></div></div>
+      <span style="font-size:11px;font-weight:700;color:${isGood?'#0ea87a':'#e8334a'};min-width:60px;text-align:right">${m.fmt(v)}</span>`;
+    container.appendChild(div);
+  });
+}
+
+// ── Semáforo ──────────────────────────────────────────────────────────────────
+function buildSemaforo(idxs) {
+  if (!idxs) idxs = tNombres.map((_,i)=>i);
+  const container = document.getElementById('tSemaforo'); container.innerHTML='';
   idxs.forEach(i => {
-    const uo=tUO[i], eb=tEbitda[i];
+    const margen=tUO[i]/tIng[i]*100;
+    const color=margen>=0?'#0ea87a':margen>=-10?'#d49600':'#e8334a';
+    const bg=margen>=0?'rgba(14,168,122,.08)':margen>=-10?'rgba(212,150,0,.08)':'rgba(232,51,74,.08)';
+    const label=margen>=0?'Rentable':margen>=-10?'En riesgo':'Pérdida';
+    const div=document.createElement('div');
+    div.style.cssText=`background:${bg};border:1.5px solid ${color}33;border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:3px`;
+    div.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:10px;color:${color};font-weight:700">${label}</span>
+        <span style="font-size:14px;color:${color}">●</span></div>
+      <div style="font-size:11px;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${tNombres[i]}</div>
+      <div style="font-size:11px;color:${color};font-weight:600">${margen>=0?'+':''}${margen.toFixed(1)}% UO</div>`;
+    container.appendChild(div);
+  });
+}
+
+// ── updateAdvancedCharts ──────────────────────────────────────────────────────
+function updateAdvancedCharts(idxs) {
+  const sd=idxs.map(i=>({x:tIng[i],y:tPct[i],r:Math.max(5,Math.min(22,Math.abs(tUO[i])/8+5)),name:tNombres[i],uo:tUO[i],color:tUO[i]>=0?'rgba(14,168,122,.75)':'rgba(232,51,74,.70)',border:tUO[i]>=0?'#0ea87a':'#e8334a'}));
+  chTScatter.data.datasets[0].data=sd;
+  chTScatter.data.datasets[0].backgroundColor=sd.map(d=>d.color);
+  chTScatter.data.datasets[0].borderColor=sd.map(d=>d.border);
+  chTScatter.update();
+  buildRanking(document.getElementById('tRankMetric').value);
+  buildSemaforo(idxs);
+}
+
+// ── refreshTiendaCharts ───────────────────────────────────────────────────────
+function refreshTiendaCharts(nombre) {
+  let idxs;
+  if (nombre === 'TODAS') {
+    idxs = tNombres.map((_,i)=>i);
+  } else if (typeof nombre === 'string') {
+    idxs = [tNombres.indexOf(nombre)].filter(i=>i>=0);
+  } else {
+    idxs = [...nombre].map(n=>tNombres.indexOf(n)).filter(i=>i>=0);
+  }
+  const fN=idxs.map(i=>tNombres[i]), fIng=idxs.map(i=>tIng[i]), fUB=idxs.map(i=>tUB[i]),
+        fUO=idxs.map(i=>tUO[i]), fC=idxs.map(i=>tUOColors[i]), fB=idxs.map(i=>tUOBorder[i]),
+        fEb=idxs.map(i=>tEbitda[i]);
+  const totIng=fIng.reduce((a,b)=>a+b,0), totUB=fUB.reduce((a,b)=>a+b,0), totUO=fUO.reduce((a,b)=>a+b,0);
+  const rentables=fUO.filter(v=>v>=0).length;
+  document.getElementById('tkv0').textContent='$'+totIng.toFixed(1)+' M';
+  document.getElementById('tkv0s').textContent=idxs.length+' tienda'+(idxs.length!==1?'s':'');
+  document.getElementById('tkv1').textContent='$'+totUB.toFixed(1)+' M';
+  document.getElementById('tkv1s').textContent='Margen '+(totIng?totUB/totIng*100:0).toFixed(1)+'%';
+  const kv2=document.getElementById('tkv2'); kv2.textContent='$'+totUO.toFixed(1)+' M'; kv2.style.color=dynCol(totUO);
+  document.getElementById('tkv2s').textContent='Margen '+(totIng?totUO/totIng*100:0).toFixed(1)+'%';
+  document.getElementById('tkv3').textContent=rentables;
+  document.getElementById('tkv3s').textContent='de '+idxs.length+' tienda'+(idxs.length!==1?'s':'');
+  document.getElementById('tkv3n').textContent=(idxs.length-rentables)+' con pérdida operativa';
+  // Line chart
+  document.getElementById('tLineTit').textContent = nombre==='TODAS'?'Comparativo de Indicadores — Todas las Tiendas':
+    typeof nombre==='string'?'Tienda: '+nombre:nombre.length===1?'Tienda: '+nombre[0]:nombre.length+' Tiendas seleccionadas';
+  chTLine.data.labels=fN;
+  chTLine.data.datasets[0].data=fIng;
+  chTLine.data.datasets[1].data=fUB;
+  chTLine.data.datasets[2].data=fUO; chTLine.data.datasets[2].backgroundColor=fC; chTLine.data.datasets[2].borderColor=fB;
+  chTLine.data.datasets[3].data=fEb; chTLine.update();
+  // Pies
+  const pd1=pieData2(fIng,fN,tPieColors); chTPieIng.data.labels=pd1.labels; chTPieIng.data.datasets[0].data=pd1.data; chTPieIng.data.datasets[0].backgroundColor=pd1.colors; chTPieIng.update();
+  const pd2=pieData2(fUB,fN,tPieColors);  chTPieUB.data.labels=pd2.labels;  chTPieUB.data.datasets[0].data=pd2.data;  chTPieUB.data.datasets[0].backgroundColor=pd2.colors;  chTPieUB.update();
+  // Tabla
+  const tbody=document.getElementById('tTiendas'); tbody.innerHTML='';
+  idxs.forEach(i=>{
     const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td style="text-align:left;font-weight:600">${tNombres[i]}</td>
-      <td>$${tIng[i].toFixed(1)} M</td>
-      <td class="neg">$${(tIng[i]-tUB[i]).toFixed(1)} M</td>
-      <td class="pos">$${tUB[i].toFixed(1)} M</td>
-      <td class="${tPct[i]>=55?'pos':''}">${tPct[i].toFixed(1)}%</td>
-      <td class="neg">$${tGastos[i].toFixed(1)} M</td>
-      <td class="${uo>=0?'pos':'neg'}">${uo>=0?'+':''}$${uo.toFixed(1)} M</td>
-      <td class="${eb>=0?'pos':'neg'}">${eb>=0?'+':''}${eb.toFixed(1)}%</td>`;
+    tr.innerHTML=`<td style="text-align:left;font-weight:600">${tNombres[i]}</td>
+      <td>$${tIng[i].toFixed(1)} M</td><td>$${(tIng[i]-tUB[i]).toFixed(1)} M</td>
+      <td>$${tUB[i].toFixed(1)} M</td><td>${tPct[i].toFixed(1)}%</td>
+      <td>$${tGastos[i].toFixed(1)} M</td>
+      <td class="${tUO[i]>=0?'pos':'neg'}">$${tUO[i].toFixed(1)} M</td>
+      <td class="${tEbitda[i]>=0?'pos':'neg'}">${tEbitda[i].toFixed(1)}%</td>`;
     tbody.appendChild(tr);
   });
-  const totG=fGastos.reduce((a,b)=>a+b,0);
-  const tr=document.createElement('tr'); tr.className='tot';
+  const totGastos=idxs.reduce((s,i)=>s+tGastos[i],0);
+  const tr=document.createElement('tr');
+  tr.style.cssText='font-weight:700;border-top:2px solid var(--bdr);background:var(--sur2)';
   tr.innerHTML=`<td style="text-align:left">TOTAL</td>
-    <td>$${totIng.toFixed(1)} M</td>
-    <td class="neg">$${(totIng-totUB).toFixed(1)} M</td>
-    <td class="pos">$${totUB.toFixed(1)} M</td>
-    <td>${(totUB/totIng*100).toFixed(1)}%</td>
-    <td class="neg">$${totG.toFixed(1)} M</td>
-    <td class="${totUO>=0?'pos':'neg'}">${totUO>=0?'+':''}$${totUO.toFixed(1)} M</td>
-    <td class="${totUO>=0?'pos':'neg'}">${(totUO/totIng*100).toFixed(1)}%</td>`;
+    <td>$${totIng.toFixed(1)} M</td><td>$${(totIng-totUB).toFixed(1)} M</td>
+    <td>$${totUB.toFixed(1)} M</td><td>${(totIng?totUB/totIng*100:0).toFixed(1)}%</td>
+    <td>$${totGastos.toFixed(1)} M</td>
+    <td class="${totUO>=0?'pos':'neg'}">$${totUO.toFixed(1)} M</td>
+    <td class="${totUO>=0?'pos':'neg'}">${(totIng?totUO/totIng*100:0).toFixed(1)}%</td>`;
   tbody.appendChild(tr);
+  updateAdvancedCharts(idxs);
 }
 
-// ── Pie helper with custom labels/colors ─────────────────────────────────────
-function pieData2(arr, names, colors, topN=12) {
-  const tot = arr.reduce((a,b)=>a+b,0);
-  const sorted = arr.map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v);
-  const top  = sorted.slice(0,topN);
-  const rest = sorted.slice(topN);
-  const labels = top.map(x=>names[x.i]);
-  const data   = top.map(x=>+x.v.toFixed(2));
-  const cols   = top.map(x=>colors[x.i]||tPieColors[x.i]);
-  if(rest.length>0){
-    labels.push('Otras ('+rest.length+')');
-    data.push(+rest.reduce((a,x)=>a+x.v,0).toFixed(2));
-    cols.push('#b0b8cc');
-  }
-  return {labels, data, colors:cols, tot};
+// ── Dropdown tiendas ──────────────────────────────────────────────────────────
+(()=>{
+  const list = document.getElementById('tCheckList');
+  if(!list) return;
+  tNombres.forEach((n,i) => {
+    const color = tPieColors[i % tPieColors.length];
+    const lbl = document.createElement('label');
+    lbl.style.cssText='display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:var(--txt);padding:4px;border-radius:5px';
+    lbl.onmouseover=function(){this.style.background='var(--sur2)';};
+    lbl.onmouseout=function(){this.style.background='';};
+    const chk=document.createElement('input'); chk.type='checkbox'; chk.checked=true;
+    chk.dataset.nombre=n; chk.style.cssText='width:14px;height:14px;cursor:pointer'; chk.style.accentColor=color;
+    chk.onchange=()=>tApplyCheckFilter();
+    const dot=document.createElement('span'); dot.style.cssText='width:8px;height:8px;border-radius:50%;background:'+color+';flex-shrink:0';
+    const txt=document.createElement('span'); txt.textContent=n; txt.dataset.search=n.toLowerCase();
+    lbl.appendChild(chk); lbl.appendChild(dot); lbl.appendChild(txt);
+    list.appendChild(lbl);
+  });
+})();
+
+function toggleTiendaDrop(e) {
+  e.stopPropagation();
+  const menu=document.getElementById('tDropMenu');
+  const isOpen=menu.style.display!=='none';
+  menu.style.display=isOpen?'none':'block';
+  if(!isOpen) document.getElementById('tSearch').focus();
 }
+document.addEventListener('click', e=>{
+  const wrap=document.getElementById('tDropWrap');
+  if(wrap&&!wrap.contains(e.target)) document.getElementById('tDropMenu').style.display='none';
+});
+function filterTiendaSearch(val) {
+  const q=val.toLowerCase();
+  document.querySelectorAll('#tCheckList label').forEach(lbl=>{
+    const txt=lbl.querySelector('span[data-search]');
+    lbl.style.display=(!q||txt.dataset.search.includes(q))?'':'none';
+  });
+}
+function tToggleAll(checked) {
+  document.querySelectorAll('#tCheckList input[type=checkbox]').forEach(chk=>{chk.checked=checked;});
+  tApplyCheckFilter();
+}
+function tApplyCheckFilter() {
+  const all=[...document.querySelectorAll('#tCheckList input[type=checkbox]')];
+  const checked=all.filter(c=>c.checked).map(c=>c.dataset.nombre);
+  const allChk=document.getElementById('tChkAll');
+  allChk.checked=checked.length===tNombres.length;
+  allChk.indeterminate=checked.length>0&&checked.length<tNombres.length;
+  const lbl=document.getElementById('tDropLbl');
+  if(checked.length===0||checked.length===tNombres.length) lbl.textContent='Todas las tiendas ('+tNombres.length+')';
+  else if(checked.length===1) lbl.textContent=checked[0];
+  else lbl.textContent=checked.length+' tiendas seleccionadas';
+  const nombres=checked.length===0||checked.length===tNombres.length?'TODAS':checked;
+  tLineFilter=nombres==='TODAS'?'TODAS':checked[0];
+  refreshTiendaCharts(nombres);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+refreshTiendaCharts('TODAS');
+buildRanking('ing');
+buildSemaforo();
 </script>
 </body>
 </html>
